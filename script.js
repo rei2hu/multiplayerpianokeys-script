@@ -2264,6 +2264,7 @@ Rect.prototype.contains = function(x, y) {
     
 // AutoPlayer
 ///////////////////////////////////////////////////////////////
+/*
     function readSingleFile(e) {
         var file = e.target.files[0];
         if (!file) {
@@ -2305,6 +2306,7 @@ Rect.prototype.contains = function(x, y) {
     autoplay.style.top = "9px";
     $("div[class='relative']")[0].appendChild(autoplay);
     document.getElementById('midi-play').addEventListener('change', readSingleFile, false);
+    */
     
     
 });
