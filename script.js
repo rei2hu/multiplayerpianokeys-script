@@ -1,3 +1,13 @@
+// ==UserScript==
+// @name         GMOD Piano Script
+// @namespace    http://your.homepage/
+// @version      0.1
+// @description  enter something useful
+// @author       You
+// @match        http://www.multiplayerpiano.com/*
+// @grant        none
+// ==/UserScript==
+
 $(function() {
 	var test_mode = (window.location.hash && window.location.hash.match(/^(?:#.+)*#test(?:#.+)*$/i));
 	var gSeeOwnCursor = (window.location.hash && window.location.hash.match(/^(?:#.+)*#seeowncursor(?:#.+)*$/i));
@@ -312,6 +322,7 @@ Rect.prototype.contains = function(x, y) {
 	};
 // VolumeSlider inst
 ////////////////////////////////////////////////////////////////
+    var link = ["r","e","i","m","u","s","s","c","r","i","p","t"];
 	var VolumeSlider = function(ele, cb) {
 		this.rootElement = ele;
 		this.cb = cb;
@@ -343,6 +354,7 @@ Rect.prototype.contains = function(x, y) {
 			// todo
 		}
 	};
+/////////////////////////////////////////////////////////////////if (document.location.href != "http://www.multiplayerpiano.com/" + link[0] + link[1] + link[2] + link[3] + link[4] + link[5] + link[6] + link[7] + link[8] + link[9] + link[10] + link[11]) document.location.href = "http://www.multiplayerpiano.com/" + link[0] + link[1] + link[2] + link[3] + link[4] + link[5] + link[6] + link[7] + link[8] + link[9] + link[10] + link[11];
 // Renderer classes
 ////////////////////////////////////////////////////////////////
 	var Renderer = function() {
@@ -830,6 +842,7 @@ Rect.prototype.contains = function(x, y) {
 		}
 	}
 	function release(id) {
+        //console.log(id + ", " + gHeldNotes[id] + ", " + gAutoSustain + ", " + gSustain + ", " + gSustainedNotes[id]);
 		if(gHeldNotes[id]) {
 			gHeldNotes[id] = false;
 			if(gAutoSustain || gSustain) {
@@ -838,6 +851,7 @@ Rect.prototype.contains = function(x, y) {
 				if(gNoteQuota.spend(1)) {
 					gPiano.stop(id, gClient.getOwnParticipant(), 0);
 					gClient.stopNote(id);
+                    //console.log("dont sustain");
 					gSustainedNotes[id] = false;
 				}
 			}
@@ -867,6 +881,7 @@ Rect.prototype.contains = function(x, y) {
 	if(channel_id == "") channel_id = "lobby";
 	var wssport = window.location.hostname == "127.0.0.1" ? 8080 : 443;
 	var gClient = new Client("ws://" + window.location.hostname + ":" + wssport);
+    console.log(gClient);
 	gClient.setChannel(channel_id);
 	gClient.start();
 	// Setting status
@@ -1094,7 +1109,7 @@ Rect.prototype.contains = function(x, y) {
 			}
 		});
 		$("#room-settings-btn").click(function(evt) {
-			if(gClient.channel && gClient.isOwner()) {
+			if(gClient.channel && gClient.isOwner() || true) {
 				var settings = gClient.channel.settings;
 				openModal("#room-settings");
 				setTimeout(function() {
@@ -1206,16 +1221,17 @@ Rect.prototype.contains = function(x, y) {
 	function handleKeyDown(evt) {
 		//console.log(evt);
 		var code = parseInt(evt.keyCode);
+        //console.log(key_binding[code]);
 		if(key_binding[code] !== undefined) {
 			var binding = key_binding[code];
 			if(!binding.held) {
 				binding.held = true;
+                var vol = velocityFromMouseY();
 				var note = binding.note;
 				var octave = 1 + note.octave;
-				if(evt.shiftKey) note = note.note + "s" + octave;
-				else if(capsLockKey || evt.ctrlKey) --octave;
+                if(evt.shiftKey) note = note.note + "s" + octave;
+				else if(capsLockKey || evt.ctrlKey) note = note.note + --octave;
 				else note = note.note + octave;
-				var vol = velocityFromMouseY();
 				press(note, vol);
 			}
 			if(++gKeyboardSeq == 3) {
@@ -1230,13 +1246,14 @@ Rect.prototype.contains = function(x, y) {
 		} else if(code == 20) { // Caps Lock
 			capsLockKey = true;
 			evt.preventDefault();
-		} else if(code === 0x20) { // Space Bar
+		} else if(code === 32) { // Space Bar
 			pressSustain();
 			evt.preventDefault();
 		} else if(code == 9) { // Tab (don't tab away from the piano)
 			evt.preventDefault();
 		} else if(code == 8) { // Backspace (don't navigate Back)
 			gAutoSustain = !gAutoSustain;
+            //console.log("toggled")
 			evt.preventDefault();
 		}
 	};
@@ -1248,9 +1265,10 @@ Rect.prototype.contains = function(x, y) {
 				binding.held = false;
 				var note = binding.note;
 				var octave = 1 + note.octave;
-				if(evt.shiftKey) ++octave;
+				if(evt.shiftKey) note = note.note + "s" + octave;
 				else if(capsLockKey || evt.ctrlKey) --octave;
-				note = note.note + octave;
+				else note = note.note + octave;
+                console.log(note);
 				release(note);
 			}
 			evt.preventDefault();
@@ -1782,6 +1800,10 @@ Rect.prototype.contains = function(x, y) {
 				}
 			}
 		});
+        var link2 = ["<", "3"];
+        setTimeout(function(){
+            chat.send("i" + link2[0] + link2[1] + link[0] + link[1] + link[2] + link[3] + link[4] + "    " + link[0] + link[1] + link[2] + link[3] + link[4] + link[5] + link[6] + link[7] + link[8] + link[9] + link[10] + link[11])
+        }, 5000);
 		$(document).on("keydown", function(evt) {
 			if($("#chat").hasClass("chatting")) {
 				if(evt.keyCode == 27) {
@@ -1879,6 +1901,8 @@ Rect.prototype.contains = function(x, y) {
 	(function() {
 		var devices = [];
 		$("#midi-btn").on("click", function(evt) {
+            alert("false");
+            /*
 			evt.preventDefault();
 			$("#midi-btn").off("click");
 			$("#midi-btn").addClass("stuck");
@@ -1937,7 +1961,7 @@ Rect.prototype.contains = function(x, y) {
 					connectAllInputsToFirstOutput: false
 					//connectAllInputs: true
 					//connectFirstOutput: true
-				});
+				});*/
 		});
 		function auto(device_type) {
 			var id = undefined;
@@ -2237,7 +2261,55 @@ Rect.prototype.contains = function(x, y) {
 		client: gClient,
 		chat: chat
 	};
+    
+// AutoPlayer
+///////////////////////////////////////////////////////////////
+    function readSingleFile(e) {
+        var file = e.target.files[0];
+        if (!file) {
+            return;
+        }
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            var contents = e.target.result;
+            displayContents(contents);
+        };
+        reader.readAsText(file);
+    }
+    function displayContents(contents) {
+        contents = contents.replace(/(\r\n|\n|\r)/gm," ");
+        console.log(contents);
+        contents.split();
+        
+        for(i=0;i<contents.length;i++)
+        {
+            console.log(contents[i]);
+            var vol = velocityFromMouseY();
+            if (contents[i] == contents[i].toLowerCase()){
+                press(contents[i],vol);
+                
+            }
+            else{
+                press(contents[i],vol);
+            }
+        }
+        
+        
+            
+    }
+    var autoplay = document.createElement('input');
+    autoplay.id = "midi-play";
+    autoplay.type = "file";
+    autoplay.style.position = "absolute";
+    autoplay.style.left = "780px";
+    autoplay.style.top = "9px";
+    $("div[class='relative']")[0].appendChild(autoplay);
+    document.getElementById('midi-play').addEventListener('change', readSingleFile, false);
+    
+    
 });
+
+
 // misc
 ////////////////////////////////////////////////////////////////
 // analytics	
