@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      0.2
+// @version      0.3
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -9,6 +9,9 @@
 // ==/UserScript==
 
 $(function() {
+    var l = 0;
+    var k = 0;
+    var waiting = true;
 	var test_mode = (window.location.hash && window.location.hash.match(/^(?:#.+)*#test(?:#.+)*$/i));
 	var gSeeOwnCursor = (window.location.hash && window.location.hash.match(/^(?:#.+)*#seeowncursor(?:#.+)*$/i));
 	var gMidiOutTest = (window.location.hash && window.location.hash.match(/^(?:#.+)*#midiout(?:#.+)*$/i));
@@ -850,8 +853,9 @@ Rect.prototype.contains = function(x, y) {
 			} else {
 				if(gNoteQuota.spend(1)) {
 					gPiano.stop(id, gClient.getOwnParticipant(), 0);
+                    var id2 = id.split('');
 					gClient.stopNote(id);
-                    //console.log("dont sustain");
+                    //console.log(id);
 					gSustainedNotes[id] = false;
 				}
 			}
@@ -1232,6 +1236,9 @@ Rect.prototype.contains = function(x, y) {
                 if(evt.shiftKey) note = note.note + "s" + octave;
 				else if(capsLockKey || evt.ctrlKey) note = note.note + --octave;
 				else note = note.note + octave;
+                
+                waiting = false;
+                
 				press(note, vol);
 			}
 			if(++gKeyboardSeq == 3) {
@@ -1268,7 +1275,7 @@ Rect.prototype.contains = function(x, y) {
 				if(evt.shiftKey) note = note.note + "s" + octave;
 				else if(capsLockKey || evt.ctrlKey) --octave;
 				else note = note.note + octave;
-                console.log(note);
+                //console.log(note);
 				release(note);
 			}
 			evt.preventDefault();
@@ -1800,10 +1807,10 @@ Rect.prototype.contains = function(x, y) {
 				}
 			}
 		});
-        var link2 = ["<", "3"];
-        setTimeout(function(){
-            chat.send("i" + link2[0] + link2[1] + link[0] + link[1] + link[2] + link[3] + link[4] + "    " + link[0] + link[1] + link[2] + link[3] + link[4] + link[5] + link[6] + link[7] + link[8] + link[9] + link[10] + link[11])
-        }, 5000);
+        //var link2 = ["<", "3"];
+        //setTimeout(function(){
+        //    chat.send("i" + link2[0] + link2[1] + link[0] + link[1] + link[2] + link[3] + link[4] + "    " + link[0] + link[1] + link[2] + link[3] + link[4] + link[5] + link[6] + link[7] + link[8] + link[9] + link[10] + link[11])
+        //}, 5000);
 		$(document).on("keydown", function(evt) {
 			if($("#chat").hasClass("chatting")) {
 				if(evt.keyCode == 27) {
@@ -2261,43 +2268,194 @@ Rect.prototype.contains = function(x, y) {
 		client: gClient,
 		chat: chat
 	};
+// Sheet Tester
+///////////////////////////////////////////////////////////////
+var html = document.getElementsByTagName("html");
+var style = document.createElement('style');
+style.type = 'text/css';
+style.innerHTML = '#panel{position:absolute;top:0px;width:100%;overflow:hidden;white-space:nowrap;display:block;padding:0px 10px 0px 10px;background:#fff;z-index:250;border:1px solid black;float: top;color:#000;}';
+document.getElementsByTagName('head')[0].appendChild(style);
     
+var panel = document.createElement('div');
+panel.setAttribute("id", "panel");
+document.getElementById('piano').appendChild(panel);
+$("div[id='panel']")[0].innerHTML = "notes here";
+
+
 // AutoPlayer
 ///////////////////////////////////////////////////////////////
-/*
+
     function readSingleFile(e) {
         var file = e.target.files[0];
         if (!file) {
             return;
         }
         var reader = new FileReader();
+        try{
         reader.onload = function(e) {
+            try{
+                clearInterval(loop);
+            }catch(e){
+            }
+            
+            k = 0;
+            l = 0;
             var contents = e.target.result;
-            displayContents(contents);
+            var wat = contents.split("");            
+            console.log(wat);
+            var fullPath = document.getElementById('midi-play').value;
+            if (fullPath) {
+                var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
+                var filename = fullPath.substring(startIndex);
+                if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+                    filename = filename.substring(1);
+                }
+                console.log(filename + " loaded");
+            }
+            $("div[id='panel']")[0].innerHTML = contents;
+            //displayContents(contents);
+            function ScrollDiv(){
+
+                if((waiting == false)){
+                    //k = l;
+                    do{
+                        k += 1; 
+                    }while(!(/([0-9a-zA-Z!-(^\[])/.test(wat[k]))) // after pressing key, skip forward to next NOTE OR [
+                    
+                    
+                    $("div[id='panel']")[0].innerHTML = wat[k]; // print thing
+                    k+=1;
+                    /*
+                    if(/([\[])/.test(wat[k])) l = k+1;
+                    else l = k;
+                    while(!(/([\]])/.test(wat[k]))){
+                        $("div[id='panel']")[0].innerHTML += "<font color=red>" + wat[k] + "</font>"; // if note is NOT ] THEN PRINT IT
+                        k+=1;
+                    }
+                    
+                     $("div[id='panel']")[0].innerHTML += "<font color=red>" + wat[k] + "</font>";
+                        k+=1;
+                    */
+                    if(k-300 < wat.length){
+                    for(var i = k; i < k+200; i++) {
+                            $("div[id='panel']")[0].innerHTML += wat[i]
+                    }
+                    }else{
+                        for(var i = k+1; i < wat.length; i++) {
+                            $("div[id='panel']")[0].innerHTML += wat[i]
+                    }
+                    }
+                    
+                    waiting = true;
+                }
+            }
+
+            loop = setInterval(ScrollDiv,1)
+            
         };
+        }catch(e){
+        }
+        
         reader.readAsText(file);
     }
+    
+    
+/*
     function displayContents(contents) {
-        contents = contents.replace(/(\r\n|\n|\r)/gm," ");
         console.log(contents);
         contents.split();
         
         for(i=0;i<contents.length;i++)
         {
-            console.log(contents[i]);
+            //console.log(contents[i].charCodeAt(0));
             var vol = velocityFromMouseY();
+            var key_binding = {
+                49: n("c"),
+                50: n("d"),
+                51: n("e"),
+                52: n("f"),
+                53: n("g"),
+                54: n("a"),
+                55: n("b"),
+                56: n("c", 1),
+                57: n("d", 1),
+                48: n("e", 1),
+                81: n("f", 1),
+                87: n("g", 1),
+                69: n("a", 1),
+                82: n("b", 1),
+                84: n("c", 2),
+                89: n("d", 2),
+                85: n("e", 2),
+                73: n("f", 2),
+                79: n("g", 2),
+                80: n("a", 2),
+                65: n("b", 2),
+                83: n("c", 3),
+                68: n("d", 3),
+                70: n("e", 3),
+                71: n("f", 3),
+                72: n("g", 3),
+                74: n("a", 3),
+                75: n("b", 3),
+                76: n("c", 4),
+                90: n("d", 4),
+                88: n("e", 4),
+                67: n("f", 4),
+                86: n("g", 4),
+                66: n("a", 4),
+                78: n("b", 4),
+                77: n("c", 5)
+            };
+            var tmeout = 10;
+            var note;
+            var vol;
+            var capsLockKey = false;
+            var code;
+            if(contents[i] == contents[i].toLowerCase()){
+                code = parseInt(contents[i].toUpperCase().charCodeAt(0));
+            }else{
+                code = parseInt(contents[i].toLowerCase().charCodeAt(0) + "s");
+            }
+            console.log(code);
+            if(key_binding[code] !== undefined) {
+                var binding = key_binding[code];
+                if(!binding.held) {
+                    binding.held = true;
+                    vol = velocityFromMouseY();
+                    note = binding.note;
+                    var octave = 1 + note.octave;
+                    if(capsLockKey) note = note.note + --octave;
+                    else note = note.note + octave;
+                    console.log(note + ", " + vol);
+                }
+                if(++gKeyboardSeq == 3) {
+                    gKnowsYouCanUseKeyboard = true;
+                    if(window.gKnowsYouCanUseKeyboardTimeout) clearTimeout(gKnowsYouCanUseKeyboardTimeout);
+                    if(localStorage) localStorage.knowsYouCanUseKeyboard = true;
+                    if(window.gKnowsYouCanUseKeyboardNotification) gKnowsYouCanUseKeyboardNotification.close();
+                }
+                while(waiting == true){};
+                waiting = true;
+                press(note, vol);
+            }
+            
+        ///////////
+            /*
             if (contents[i] == contents[i].toLowerCase()){
-                press(contents[i],vol);
+                setTimeout(function(){press(contents[i],vol);console.log(contents[i])},1000);
                 
             }
             else{
                 press(contents[i],vol);
             }
+            *//*
         }
         
         
             
     }
+*/
     var autoplay = document.createElement('input');
     autoplay.id = "midi-play";
     autoplay.type = "file";
@@ -2306,8 +2464,8 @@ Rect.prototype.contains = function(x, y) {
     autoplay.style.top = "9px";
     $("div[class='relative']")[0].appendChild(autoplay);
     document.getElementById('midi-play').addEventListener('change', readSingleFile, false);
-    */
     
+    ////////
     
 });
 
