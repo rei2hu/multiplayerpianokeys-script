@@ -9,6 +9,38 @@
 // ==/UserScript==
 
 $(function() {
+    // sound select
+    //////////////////////////////////
+    var unedited = window.prompt("what piano type do you want? \n(kawai/maestro/default)","");
+    if (unedited != null && unedited != "default"){
+        var pianoType = "https://raw.githubusercontent.com/rei2hu/piano-sounds/master/" + unedited;
+        var typearoo = ".wav";
+    }
+    else{
+        pianoType = "/mp3/";
+        typearoo = ".wav.mp3";
+    }
+    
+    
+   
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     var l = 0;
     var k = 0;
     var waiting = true;
@@ -261,14 +293,14 @@ Rect.prototype.contains = function(x, y) {
 					if(cb) cb();
 				});
 			} catch(e) {
-				/*throw new Error(e.message
+				throw new Error(e.message
 					+ " / id: " + id
 					+ " / url: " + url
 					+ " / status: " + req.status
 					+ " / ArrayBuffer: " + (req.response instanceof ArrayBuffer)
-					+ " / byteLength: " + (req.response && req.response.byteLength ? req.response.byteLength : "undefined"));*/
-				new Notification({id: "audio-download-error", title: "Problem", text: "For some reason, an audio download failed with a status of " + req.status + ". "
-					+ " I blame antivirus software.", target: "#piano", duration: 10000});
+					+ " / byteLength: " + (req.response && req.response.byteLength ? req.response.byteLength : "undefined"));
+				/*new Notification({id: "audio-download-error", title: "Problem", text: "For some reason, an audio download failed with a status of " + req.status + ". "
+					+ " I blame antivirus software.", target: "#piano", duration: 10000});*/
 			}
 		});
 		req.send();
@@ -798,7 +830,8 @@ Rect.prototype.contains = function(x, y) {
 				if(!piano.keys.hasOwnProperty(i)) continue;
 				(function() {
 					var key = piano.keys[i];
-					piano.audio.load(key.note, "/mp3/" + key.note + ".wav.mp3", function() {
+                    //https://raw.githubusercontent.com/rei2hu/piano-sounds/master/maestro/a1.wav
+					piano.audio.load(key.note, pianoType + "/" + key.note + typearoo, function() {
 						key.loaded = true;
 						key.timeLoaded = Date.now();
 						if(key.domElement) // todo: move this to renderer somehow
@@ -1238,7 +1271,7 @@ Rect.prototype.contains = function(x, y) {
 				else note = note.note + octave;
                 
                 waiting = false;
-                
+                console.log(note);
 				press(note, vol);
 			}
 			if(++gKeyboardSeq == 3) {
