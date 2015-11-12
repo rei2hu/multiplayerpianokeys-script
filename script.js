@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      0.4
+// @version      0.5
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -11,7 +11,7 @@
 $(function() {
     // sound select
     //////////////////////////////////
-    var unedited = window.prompt("what piano type do you want? \n(kawai/maestro/default)","");
+    var unedited = window.prompt("what piano type do you want? \n(kawai/maestro/steinway/default)","");
     if (unedited != null && unedited != "default"){
         var pianoType = "https://raw.githubusercontent.com/rei2hu/piano-sounds/master/" + unedited;
         var typearoo = ".wav";
@@ -20,27 +20,7 @@ $(function() {
         pianoType = "/mp3/";
         typearoo = ".wav.mp3";
     }
-    
-    
-   
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     var l = 0;
     var k = 0;
     var waiting = true;
