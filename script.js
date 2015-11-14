@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      0.5
+// @version      0.6
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -9,10 +9,12 @@
 // ==/UserScript==
 
 $(function() {
+    document.getElementById('more-button').style.background="url(http://en.touhouwiki.net/images/e/e0/076BAiJRReimu.jpg)";
+    document.getElementById("more-button").style.backgroundSize = "100px 100px";
     // sound select
     //////////////////////////////////
     var unedited = window.prompt("what piano type do you want? \n(kawai/maestro/steinway/default)","");
-    if (unedited != null && unedited != "default"){
+    if (unedited != "" && unedited != "default"){
         var pianoType = "https://raw.githubusercontent.com/rei2hu/piano-sounds/master/" + unedited;
         var typearoo = ".wav";
     }
@@ -1197,42 +1199,63 @@ Rect.prototype.contains = function(x, y) {
 	};
 	var n = function(a, b) { return {note: new Note(a, b), held: false}; };
 	var key_binding = {
-		49: n("c"),
-50: n("d"),
-51: n("e"),
-52: n("f"),
-53: n("g"),
-54: n("a"),
-55: n("b"),
-56: n("c", 1),
-57: n("d", 1),
-48: n("e", 1),
-81: n("f", 1),
-87: n("g", 1),
-69: n("a", 1),
-82: n("b", 1),
-84: n("c", 2),
-89: n("d", 2),
-85: n("e", 2),
-73: n("f", 2),
-79: n("g", 2),
-80: n("a", 2),
-65: n("b", 2),
-83: n("c", 3),
-68: n("d", 3),
-70: n("e", 3),
-71: n("f", 3),
-72: n("g", 3),
-74: n("a", 3),
-75: n("b", 3),
-76: n("c", 4),
-90: n("d", 4),
-88: n("e", 4),
-67: n("f", 4),
-86: n("g", 4),
-66: n("a", 4),
-78: n("b", 4),
-77: n("c", 5)
+        // f1-f9 for lower notes
+        112: n("a", -2),
+        113: n("b", -2),
+        114: n("c", -1),
+        115: n("d", -1),
+        116: n("e", -1),
+        117: n("f", -1),
+        118: n("g", -1),
+        119: n("a", -1),
+        120: n("b", -1),
+        
+        //insert - home - pgup - del - end - pgdn - up for highest
+        45: n("d", 5),
+        36: n("e", 5),
+        33: n("f", 5),
+        46: n("g", 5),
+        35: n("a", 5),
+        34: n("b", 5),
+        38: n("c", 6),
+        
+        // alphanumerics 1-m
+        49: n("c"),
+        50: n("d"),
+        51: n("e"),
+        52: n("f"),
+        53: n("g"),
+        54: n("a"),
+        55: n("b"),
+        56: n("c", 1),
+        57: n("d", 1),
+        48: n("e", 1),
+        81: n("f", 1),
+        87: n("g", 1),
+        69: n("a", 1),
+        82: n("b", 1),
+        84: n("c", 2),
+        89: n("d", 2),
+        85: n("e", 2),
+        73: n("f", 2),
+        79: n("g", 2),
+        80: n("a", 2),
+        65: n("b", 2),
+        83: n("c", 3),
+        68: n("d", 3),
+        70: n("e", 3),
+        71: n("f", 3),
+        72: n("g", 3),
+        74: n("a", 3),
+        75: n("b", 3),
+        76: n("c", 4),
+        90: n("d", 4),
+        88: n("e", 4),
+        67: n("f", 4),
+        86: n("g", 4),
+        66: n("a", 4),
+        78: n("b", 4),
+        77: n("c", 5)
 	};
 	var capsLockKey = false;
 	function handleKeyDown(evt) {
