@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      0.6
+// @version      0.7
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -9,8 +9,6 @@
 // ==/UserScript==
 
 $(function() {
-    document.getElementById('more-button').style.background="url(http://en.touhouwiki.net/images/e/e0/076BAiJRReimu.jpg)";
-    document.getElementById("more-button").style.backgroundSize = "100px 100px";
     // sound select
     //////////////////////////////////
     var unedited = window.prompt("what piano type do you want? \n(kawai/maestro/steinway/default)","");
@@ -708,6 +706,8 @@ Rect.prototype.contains = function(x, y) {
 		}
 		this.ctx.restore();
 	};
+    document.body.style.background ="url(http://en.touhouwiki.net/images/e/e0/076BAiJRReimu.jpg) #c0c0c0 no-repeat center top";
+    document.body.style.backgroundSize ="auto 100%"
 	CanvasRenderer.prototype.getHit = function(x, y) {
 		for(var j = 0; j < 2; j++) {
 			var sharp = j ? false : true; // black keys first
