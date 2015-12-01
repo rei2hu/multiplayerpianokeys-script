@@ -1908,7 +1908,8 @@ Rect.prototype.contains = function(x, y) {
 				}
 			},
 			send: function(message) {
-				gClient.sendArray([{m:"a", message: message}]);
+                var d = new Date();
+				gClient.sendArray([{m:"a", message: "("+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+") "+message}]);
 			},
 			receive: function(msg) {
 				if(gChatMutes.indexOf(msg.p._id) != -1) return;
