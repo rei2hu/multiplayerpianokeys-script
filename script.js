@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      0.7
+// @version      0.8
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
