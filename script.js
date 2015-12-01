@@ -1910,7 +1910,7 @@ Rect.prototype.contains = function(x, y) {
 			send: function(message) {
                 var d = new Date();
                 
-				gClient.sendArray([{m:"a", message: "("+(d.getHours()-(d.getTimezoneOffset()/60))+":"+d.getMinutes()+":"+d.getSeconds()+") "+message}]);
+				gClient.sendArray([{m:"a", message: "("+(d.getHours()-(d.getTimezoneOffset()/60)+1)+":"+d.getMinutes()+":"+d.getSeconds()+") "+message}]);
 			},
 			receive: function(msg) {
 				if(gChatMutes.indexOf(msg.p._id) != -1) return;
