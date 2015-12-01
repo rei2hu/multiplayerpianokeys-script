@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      0.9
+// @version      0.91
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -1910,7 +1910,7 @@ Rect.prototype.contains = function(x, y) {
 			send: function(message) {
                 var d = new Date();
                 
-				gClient.sendArray([{m:"a", message: "("+(d.getHours()+(d.getTimezoneOffset()/60)+1)+":"+d.getMinutes()+":"+d.getSeconds()+") "+message}]);
+				gClient.sendArray([{m:"a", message: "("+(d.getHours()+(d.getTimezoneOffset()/60)+1)+":"+('0'+d.getMinutes()).slice(-2)+":"+('0'+d.getSeconds()).slice(-2)+") "+message}]);
 			},
 			receive: function(msg) {
 				if(gChatMutes.indexOf(msg.p._id) != -1) return;
