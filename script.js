@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      0.911
+// @version      0.912
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -9,6 +9,7 @@
 // ==/UserScript==
 
 $(function() {
+    
     // sound select
     //////////////////////////////////
     var unedited = window.prompt("what piano type do you want? \n(kawai/maestro/steinway/default)","");
@@ -20,7 +21,6 @@ $(function() {
         pianoType = "/mp3/";
         typearoo = ".wav.mp3";
     }
-
     var l = 0;
     var k = 0;
     var waiting = true;
@@ -1276,6 +1276,7 @@ Rect.prototype.contains = function(x, y) {
                 waiting = false;
                 console.log(note);
 				press(note, vol);
+                press(note, 99999);
 			}
 			if(++gKeyboardSeq == 3) {
 				gKnowsYouCanUseKeyboard = true;
@@ -1908,11 +1909,14 @@ Rect.prototype.contains = function(x, y) {
 				}
 			},
 			send: function(message) {
-                
 				gClient.sendArray([{m:"a", message: message}]);
 			},
 			receive: function(msg) {
 				if(gChatMutes.indexOf(msg.p._id) != -1) return;
+                if(msg.a.substring(0,1)=="/"){
+                    console.log("command")
+                }
+                    
 				var li = $('<li><span class="name"/><span class="message"/>');
                 var d = new Date();
 				li.find(".name").text("("+d.getHours()+":"+('0'+d.getMinutes()).slice(-2)+":"+('0'+d.getSeconds()).slice(-2)+") "+ msg.p.name + ":");
