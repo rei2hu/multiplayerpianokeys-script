@@ -25,6 +25,7 @@ $(function() {
     document.body.appendChild(panel);
     $("div[id='panel']")[0].innerHTML = "v.916 updates (12/1)";
     $("div[id='panel']")[0].innerHTML += "<br>";
+    $("div[id='panel']")[0].innerHTML += "<br> added changelog";
     $("div[id='panel']")[0].innerHTML += "<br> added timestamps to chat";
     $("div[id='panel']")[0].innerHTML += "<br> moved picture";
     $("div[id='panel']")[0].innerHTML += "<br> removed autoplayer";
