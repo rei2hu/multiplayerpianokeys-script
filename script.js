@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      0.913
+// @version      0.914
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -23,6 +23,7 @@ $(function() {
     }
     var l = 0;
     var k = 0;
+    var gittar = false;
     var waiting = true;
 	var test_mode = (window.location.hash && window.location.hash.match(/^(?:#.+)*#test(?:#.+)*$/i));
 	var gSeeOwnCursor = (window.location.hash && window.location.hash.match(/^(?:#.+)*#seeowncursor(?:#.+)*$/i));
@@ -1274,7 +1275,9 @@ Rect.prototype.contains = function(x, y) {
 				else note = note.note + octave;
                 
                 waiting = false;
-                console.log(note);
+                console.log(note + " " + vol);
+                if(gittar)
+                    vol = 999999;
 				press(note, vol);
 			}
 			if(++gKeyboardSeq == 3) {
@@ -1908,13 +1911,16 @@ Rect.prototype.contains = function(x, y) {
 				}
 			},
 			send: function(message) {
+                if(message.substring(0,1)=="/"){
+                    console.log("command")
+                    if(message.substring(1)=="gittar"){
+                        gittar=!gittar
+                    }
+                }
 				gClient.sendArray([{m:"a", message: message}]);
 			},
 			receive: function(msg) {
 				if(gChatMutes.indexOf(msg.p._id) != -1) return;
-                if(msg.a.substring(0,1)=="/"){
-                    console.log("command")
-                }
                     
 				var li = $('<li><span class="name"/><span class="message"/>');
                 var d = new Date();
