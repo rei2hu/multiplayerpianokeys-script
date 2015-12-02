@@ -12,32 +12,9 @@ $(function() {
 
     /*-------------- BEGIN CUSTOM --------------*/
 
-    // changelog
-    ///////////////////////////////////////////////////////////////
-    var html = document.getElementsByTagName("html");
-    var style = document.createElement('style');
-    style.type = 'text/css';
-    style.innerHTML = '#console2{font-size:15px;color:#00ff00;position:absolute;top:10px;right:350px;width:500px;height:90px;display:block;overflow:hidden;background:#000000;;border:1px solid white;}#panel{font-size:15px;position:absolute;top:10px;right:100px;width:200px;height:250px;display:block;padding:0px 10px 10px 10px;background:#fff;z-index:250;border:1px solid black;float: top;color:#000;}';
-    document.getElementsByTagName('head')[0].appendChild(style);
-
-    var panel = document.createElement('div');
-    panel.setAttribute("id", "panel");
-    document.body.appendChild(panel);
-    var console2 = document.createElement('div');
-    console2.setAttribute("id", "console2");
-    document.body.appendChild(console2);
-    $("div[id='console2']")[0].innerHTML = "Console:";
-    $("div[id='panel']")[0].innerHTML = "v1.03 updates (12/2)";
-    $("div[id='panel']")[0].innerHTML += "<br>";
-    $("div[id='panel']")[0].innerHTML += "<br> more commands";
-
-    // isFloat function
-    //////////////////////////////////
-    function is_float(mixed_var) {
-        return +mixed_var === mixed_var && (!isFinite(mixed_var) || !! (mixed_var % 1));
-    }
     // sound select
     //////////////////////////////////
+    // select sound before anything
     var unedited = window.prompt("what piano type do you want? \n(kawai/maestro/steinway/default)","");
     if (unedited != "" && unedited != "default"){
         var pianoType = "https://raw.githubusercontent.com/rei2hu/piano-sounds/master/" + unedited;
@@ -46,6 +23,45 @@ $(function() {
     else{
         pianoType = "/mp3/";
         typearoo = ".wav.mp3";
+    }
+    
+    // changelog
+    ///////////////////////////////////////////////////////////////
+    var html = document.getElementsByTagName("html");
+    var style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = '#lol{display:none;}#console2{font-size:15px;color:#ffffff;position:absolute;top:10px;right:350px;width:500px;height:90px;display:block;overflow:hidden;background:#000000;;border:1px solid white;}#panel{font-size:15px;position:absolute;top:10px;right:100px;width:200px;height:250px;display:block;padding:0px 10px 10px 10px;background:#fff;z-index:250;border:1px solid black;float: top;color:#000;}';
+    document.getElementsByTagName('head')[0].appendChild(style);
+
+    // this versions number
+    
+    var thisver = "1.04";
+    
+    // check version to notify if update
+    var versionchk = document.createElement('div');
+    versionchk.setAttribute("id", "lol");
+    document.body.appendChild(versionchk);
+    $("#lol").load("https://raw.githubusercontent.com/rei2hu/MultiplayerPianoKeysScript/master/script.js", function(){
+        var versionNumber = $("div[id='lol']")[0].innerHTML.match(/@version.+/g);
+        var panel = document.createElement('div');
+        panel.setAttribute("id", "panel");
+        document.body.appendChild(panel);
+        versionNumber = versionNumber[0].replace("@version ","").trim();
+        $("div[id='panel']")[0].innerHTML += "Most recent version: " + versionNumber;
+        $("div[id='panel']")[0].innerHTML += "<br>Your version: " + thisver;
+        $("div[id='panel']")[0].innerHTML += "<br> type /help for commands"
+    });
+    
+    // console for message commands
+    var console2 = document.createElement('div');
+    console2.setAttribute("id", "console2");
+    document.body.appendChild(console2);
+    $("div[id='console2']")[0].innerHTML = "Console:";
+
+    // isFloat function
+    //////////////////////////////////
+    function is_float(mixed_var) {
+        return +mixed_var === mixed_var && (!isFinite(mixed_var) || !! (mixed_var % 1));
     }
 
     // time stamps
@@ -2031,7 +2047,7 @@ friends by sending them the link.<br/><br/>\
                     var args = message.substring(1).split(" ");
                     switch(args[0]) {
                         case "help":
-                            $("div[id='console2']")[0].innerHTML+="<br>/random (generates a random number)<br>/echo # (echos a note # times when you play it)<br>/vol # (plays at # volume contantly 0-1, 0 disables, try 999999!)<br>/octave #(plays hit # octaves at once)"
+                            $("div[id='console2']")[0].innerHTML+="<br>/random (generates a random number)<br>/echo # (echos a note # times when you play it)<br>/vol # (plays at # volume contantly 0-1, 0 disables, try 999999!)<br>/octave # (plays higher # octaves at once)"
                             break;
                         case "random":
                             gClient.sendArray([{m:"a", message: "Random number: " + Math.random()}]);
