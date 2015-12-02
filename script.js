@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      0.916
+// @version      1.0
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -17,18 +17,22 @@ $(function() {
     var html = document.getElementsByTagName("html");
     var style = document.createElement('style');
     style.type = 'text/css';
-    style.innerHTML = '#panel{font-size:15px;position:absolute;top:10px;right:100px;width:200px;height:250px;display:block;padding:0px 10px 10px 10px;background:#fff;z-index:250;border:1px solid black;float: top;color:#000;}';
+    style.innerHTML = '#console2{font-size:15px;color:#00ff00;position:absolute;top:10px;right:350px;width:500px;height:90px;display:block;overflow:hidden;background:#000000;;border:1px solid white;}#panel{font-size:15px;position:absolute;top:10px;right:100px;width:200px;height:250px;display:block;padding:0px 10px 10px 10px;background:#fff;z-index:250;border:1px solid black;float: top;color:#000;}';
     document.getElementsByTagName('head')[0].appendChild(style);
 
     var panel = document.createElement('div');
     panel.setAttribute("id", "panel");
     document.body.appendChild(panel);
-    $("div[id='panel']")[0].innerHTML = "v.916 updates (12/1)";
+    var console2 = document.createElement('div');
+    console2.setAttribute("id", "console2");
+    document.body.appendChild(console2);
+    $("div[id='console2']")[0].innerHTML = "Console:";
+    $("div[id='panel']")[0].innerHTML = "v1.0 updates (12/2)";
     $("div[id='panel']")[0].innerHTML += "<br>";
     $("div[id='panel']")[0].innerHTML += "<br> added timestamps to chat";
     $("div[id='panel']")[0].innerHTML += "<br> moved picture";
     $("div[id='panel']")[0].innerHTML += "<br> removed autoplayer";
-    $("div[id='panel']")[0].innerHTML += "<br> <strike>added commands</strike>";
+    $("div[id='panel']")[0].innerHTML += "<br> added commands (/help)";
 
     // sound select
     //////////////////////////////////
@@ -60,6 +64,8 @@ $(function() {
     // custom variables
     //////////////////////////////////
     var gittar = false;
+    var echo = 0
+    var constVol = 0
     /*
     search for
     var key_binding = {
@@ -1378,7 +1384,9 @@ $(function() {
                 console.log(note + " " + vol);
                 if(gittar)
                     vol = 999999;
-                press(note, vol);
+                for(i=0;i<=echo;i++){
+                    press(note, vol);
+                }
             }
             if(++gKeyboardSeq == 3) {
                 gKnowsYouCanUseKeyboard = true;
@@ -2013,21 +2021,28 @@ friends by sending them the link.<br/><br/>\
             send: function(message) {
                 gClient.sendArray([{m:"a", message: message}]);
                 if(message.substring(0,1)=="/"){
-                    console.log("command")
-                    /**
-                    switch(message.substring(1)) {
+                    //console.log("command")
+                    var args = message.substring(1).split(" ");
+                    switch(args[0]) {
                         case "help":
-                            break;
-                        case "gittar":
-                            gittar = !gittar;
-                            gClient.sendArray([{m:"a", message: "Gittar status: " + gittar}]);
+                            $("div[id='console2']")[0].innerHTML+="<br>/random (generates a random number)<br>/echo # (echos a note # times when you play it)<br>/vol # (plays at # volume contantly 0-1, 0 disables)"
                             break;
                         case "random":
                             gClient.sendArray([{m:"a", message: "Random number: " + Math.random()}]);
                             break;
+                        case "echo":
+                            echo = args[1];
+                            $("div[id='console2']")[0].innerHTML+="<br>Echoing "+echo+" times."
+                            break;
+                        case "vol":
+                            constVol = args[1];
+                            $("div[id='console2']")[0].innerHTML+="<br>Playing at "+echo+" volume."
+                            break;
                         default:
+                            $("div[id='console2']")[0].innerHTML+="<br>Unrecognized command. Try /help"
                     }
-                    **/
+                    var objDiv = document.getElementById("console2");
+                    objDiv.scrollTop = objDiv.scrollHeight;
                 }
             },
             receive: function(msg) {
