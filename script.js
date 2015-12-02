@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      1.01
+// @version      1.02
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -27,7 +27,7 @@ $(function() {
     console2.setAttribute("id", "console2");
     document.body.appendChild(console2);
     $("div[id='console2']")[0].innerHTML = "Console:";
-    $("div[id='panel']")[0].innerHTML = "v1.01 updates (12/2)";
+    $("div[id='panel']")[0].innerHTML = "v1.02 updates (12/2)";
     $("div[id='panel']")[0].innerHTML += "<br>";
     $("div[id='panel']")[0].innerHTML += "<br> added timestamps to chat";
     $("div[id='panel']")[0].innerHTML += "<br> moved picture";
@@ -2032,7 +2032,7 @@ friends by sending them the link.<br/><br/>\
                     var args = message.substring(1).split(" ");
                     switch(args[0]) {
                         case "help":
-                            $("div[id='console2']")[0].innerHTML+="<br>/random (generates a random number)<br>/echo # (echos a note # times when you play it)<br>/vol # (plays at # volume contantly 0-1, 0 disables)"
+                            $("div[id='console2']")[0].innerHTML+="<br>/random (generates a random number)<br>/echo # (echos a note # times when you play it)<br>/vol # (plays at # volume contantly 0-1, 0 disables, try 999999!)"
                             break;
                         case "random":
                             gClient.sendArray([{m:"a", message: "Random number: " + Math.random()}]);
