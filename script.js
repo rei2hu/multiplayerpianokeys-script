@@ -2041,7 +2041,6 @@ friends by sending them the link.<br/><br/>\
                 }
             },
             send: function(message) {
-                gClient.sendArray([{m:"a", message: message}]);
                 if(message.substring(0,1)=="/"){
                     //console.log("command")
                     var args = message.substring(1).split(" ");
@@ -2090,6 +2089,8 @@ friends by sending them the link.<br/><br/>\
                     }
                     var objDiv = document.getElementById("console2");
                     objDiv.scrollTop = objDiv.scrollHeight;
+                }else{
+        		gClient.sendArray([{m:"a", message: message}]);
                 }
             },
             receive: function(msg) {
