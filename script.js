@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      0.914
+// @version      0.915
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -707,7 +707,9 @@ Rect.prototype.contains = function(x, y) {
 		}
 		this.ctx.restore();
 	};
-    document.body.style.background ="url(http://en.touhouwiki.net/images/e/e0/076BAiJRReimu.jpg) #c0c0c0 no-repeat center top";
+    document.getElementById("more-button").style.background = "url(http://en.touhouwiki.net/images/e/e0/076BAiJRReimu.jpg)";  
+    document.getElementById("more-button").style.backgroundSize ="auto 100%"
+    //document.body.style.background ="url(http://en.touhouwiki.net/images/e/e0/076BAiJRReimu.jpg) #c0c0c0 no-repeat center top";
     document.body.style.backgroundSize ="auto 100%"
 	CanvasRenderer.prototype.getHit = function(x, y) {
 		for(var j = 0; j < 2; j++) {
@@ -1911,13 +1913,24 @@ Rect.prototype.contains = function(x, y) {
 				}
 			},
 			send: function(message) {
+				gClient.sendArray([{m:"a", message: message}]);
                 if(message.substring(0,1)=="/"){
                     console.log("command")
-                    if(message.substring(1)=="gittar"){
-                        gittar=!gittar
+                    /**
+                    switch(message.substring(1)) {
+                        case "help":
+                            break;
+                        case "gittar":
+                            gittar = !gittar;
+                            gClient.sendArray([{m:"a", message: "Gittar status: " + gittar}]);
+                            break;
+                        case "random":
+                            gClient.sendArray([{m:"a", message: "Random number: " + Math.random()}]);
+                            break;
+                        default:
                     }
+                    **/
                 }
-				gClient.sendArray([{m:"a", message: message}]);
 			},
 			receive: function(msg) {
 				if(gChatMutes.indexOf(msg.p._id) != -1) return;
