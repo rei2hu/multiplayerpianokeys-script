@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      1.02
+// @version      1.03
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -27,12 +27,9 @@ $(function() {
     console2.setAttribute("id", "console2");
     document.body.appendChild(console2);
     $("div[id='console2']")[0].innerHTML = "Console:";
-    $("div[id='panel']")[0].innerHTML = "v1.02 updates (12/2)";
+    $("div[id='panel']")[0].innerHTML = "v1.03 updates (12/2)";
     $("div[id='panel']")[0].innerHTML += "<br>";
-    $("div[id='panel']")[0].innerHTML += "<br> added timestamps to chat";
-    $("div[id='panel']")[0].innerHTML += "<br> moved picture";
-    $("div[id='panel']")[0].innerHTML += "<br> removed autoplayer";
-    $("div[id='panel']")[0].innerHTML += "<br> added commands (/help)";
+    $("div[id='panel']")[0].innerHTML += "<br> more commands";
 
     // isFloat function
     //////////////////////////////////
@@ -68,9 +65,10 @@ $(function() {
 
     // custom variables
     //////////////////////////////////
-    var gittar = false;
     var echo = 0
     var constVol = 0
+    var playUpper = false;
+    var playUpper = 0;
     /*
     search for
     var key_binding = {
@@ -1381,18 +1379,19 @@ $(function() {
                 var vol = velocityFromMouseY();
                 var note = binding.note;
                 var octave = 1 + note.octave;
-                if(evt.shiftKey) note = note.note + "s" + octave;
-                else if(capsLockKey || evt.ctrlKey) note = note.note + --octave;
-                else note = note.note + octave;
-
+                if(evt.shiftKey) note1 = note.note + "s" + octave;
+                else note1 = note.note + octave;
                 waiting = false;
-                console.log(note + " " + vol);
-                if(gittar)
-                    vol = 999999;
                 if(constVol>0)
                     vol = constVol;
                 for(i=0;i<=echo;i++){
-                    press(note, vol);
+                    for(j=0;j<playUpper;j++){
+                        octave++;
+                        if(evt.shiftKey) note2 = note.note + "s" + octave;
+                        else note2 = note.note + octave;
+                        press(note2, vol);
+                    }
+                    press(note1, vol);
                 }
             }
             if(++gKeyboardSeq == 3) {
@@ -2032,10 +2031,21 @@ friends by sending them the link.<br/><br/>\
                     var args = message.substring(1).split(" ");
                     switch(args[0]) {
                         case "help":
-                            $("div[id='console2']")[0].innerHTML+="<br>/random (generates a random number)<br>/echo # (echos a note # times when you play it)<br>/vol # (plays at # volume contantly 0-1, 0 disables, try 999999!)"
+                            $("div[id='console2']")[0].innerHTML+="<br>/random (generates a random number)<br>/echo # (echos a note # times when you play it)<br>/vol # (plays at # volume contantly 0-1, 0 disables, try 999999!)<br>/octave #(plays hit # octaves at once)"
                             break;
                         case "random":
                             gClient.sendArray([{m:"a", message: "Random number: " + Math.random()}]);
+                            break;
+                        case "octave":
+                            if(Number(args[1]) == args[1])
+                            {
+                                playUpper = args[1];
+                                $("div[id='console2']")[0].innerHTML+="<br>Playing "+playUpper+" higher octaves.";
+                            }
+                            else
+                            {
+                                $("div[id='console2']")[0].innerHTML+="<br>Can't play "+args[1]+" higher octaves.";
+                            }
                             break;
                         case "echo":
                             if(Number(args[1]) == args[1])
