@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      0.912
+// @version      0.913
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -1276,7 +1276,6 @@ Rect.prototype.contains = function(x, y) {
                 waiting = false;
                 console.log(note);
 				press(note, vol);
-                press(note, 99999);
 			}
 			if(++gKeyboardSeq == 3) {
 				gKnowsYouCanUseKeyboard = true;
