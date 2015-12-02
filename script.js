@@ -9,9 +9,9 @@
 // ==/UserScript==
 
 $(function() {
-    
+
     /*-------------- BEGIN CUSTOM --------------*/
-    
+
     // changelog
     ///////////////////////////////////////////////////////////////
     var html = document.getElementsByTagName("html");
@@ -34,6 +34,11 @@ $(function() {
     $("div[id='panel']")[0].innerHTML += "<br> removed autoplayer";
     $("div[id='panel']")[0].innerHTML += "<br> added commands (/help)";
 
+    // isFloat function
+    //////////////////////////////////
+    function is_float(mixed_var) {
+        return +mixed_var === mixed_var && (!isFinite(mixed_var) || !! (mixed_var % 1));
+    }
     // sound select
     //////////////////////////////////
     var unedited = window.prompt("what piano type do you want? \n(kawai/maestro/steinway/default)","");
@@ -45,7 +50,7 @@ $(function() {
         pianoType = "/mp3/";
         typearoo = ".wav.mp3";
     }
-    
+
     // time stamps
     //////////////////////////////////
     /*
@@ -53,14 +58,14 @@ $(function() {
     var d = new Date();
     li.find(".name").text("("+d.getHours()+":"+('0'+d.getMinutes()).slice(-2)+":"+('0'+d.getSeconds()).slice(-2)+") "+ msg.p.name + ":");
     */
-    
+
     // custom pictures
     //////////////////////////////////
     document.getElementById("more-button").style.background = "url(http://en.touhouwiki.net/images/e/e0/076BAiJRReimu.jpg)";  
     document.getElementById("more-button").style.backgroundSize ="auto 100%"
     //document.body.style.background ="url(http://en.touhouwiki.net/images/e/e0/076BAiJRReimu.jpg) #c0c0c0 no-repeat center top";
     document.body.style.backgroundSize ="auto 100%"
-    
+
     // custom variables
     //////////////////////////////////
     var gittar = false;
@@ -128,10 +133,10 @@ $(function() {
         77: n("c", 5)
     };
     */
-    
+
     /*-------------- END CUSTOM --------------*/
-    
-    
+
+
     var waiting = true;
     var test_mode = (window.location.hash && window.location.hash.match(/^(?:#.+)*#test(?:#.+)*$/i));
     var gSeeOwnCursor = (window.location.hash && window.location.hash.match(/^(?:#.+)*#seeowncursor(?:#.+)*$/i));
@@ -2033,12 +2038,26 @@ friends by sending them the link.<br/><br/>\
                             gClient.sendArray([{m:"a", message: "Random number: " + Math.random()}]);
                             break;
                         case "echo":
-                            echo = args[1];
-                            $("div[id='console2']")[0].innerHTML+="<br>Echoing "+echo+" times."
+                            if(Number(args[1]) == args[1])
+                            {
+                                echo = args[1];
+                                $("div[id='console2']")[0].innerHTML+="<br>Echoing "+echo+" times.";
+                            }
+                            else
+                            {
+                                $("div[id='console2']")[0].innerHTML+="<br>Cannot echo "+args[1]+" times.";
+                            }
                             break;
                         case "vol":
-                            constVol = args[1];
-                            $("div[id='console2']")[0].innerHTML+="<br>Playing at "+constVol+" volume."
+                            if(Number(args[1]) == args[1])
+                            {
+                                constVol = args[1];
+                                $("div[id='console2']")[0].innerHTML+="<br>Playing at "+constVol+" volume."
+                            }
+                            else
+                            {
+                                $("div[id='console2']")[0].innerHTML+="<br>Cannot play at"+args[1]+" volume."
+                            }
                             break;
                         default:
                             $("div[id='console2']")[0].innerHTML+="<br>Unrecognized command. Try /help"
