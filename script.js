@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      1.0
+// @version      1.01
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -27,7 +27,7 @@ $(function() {
     console2.setAttribute("id", "console2");
     document.body.appendChild(console2);
     $("div[id='console2']")[0].innerHTML = "Console:";
-    $("div[id='panel']")[0].innerHTML = "v1.0 updates (12/2)";
+    $("div[id='panel']")[0].innerHTML = "v1.01 updates (12/2)";
     $("div[id='panel']")[0].innerHTML += "<br>";
     $("div[id='panel']")[0].innerHTML += "<br> added timestamps to chat";
     $("div[id='panel']")[0].innerHTML += "<br> moved picture";
@@ -1384,6 +1384,8 @@ $(function() {
                 console.log(note + " " + vol);
                 if(gittar)
                     vol = 999999;
+                if(constVol>0)
+                    vol = constVol;
                 for(i=0;i<=echo;i++){
                     press(note, vol);
                 }
@@ -2036,7 +2038,7 @@ friends by sending them the link.<br/><br/>\
                             break;
                         case "vol":
                             constVol = args[1];
-                            $("div[id='console2']")[0].innerHTML+="<br>Playing at "+echo+" volume."
+                            $("div[id='console2']")[0].innerHTML+="<br>Playing at "+constVol+" volume."
                             break;
                         default:
                             $("div[id='console2']")[0].innerHTML+="<br>Unrecognized command. Try /help"
@@ -2086,7 +2088,7 @@ friends by sending them the link.<br/><br/>\
     (function() {
         var devices = [];
         $("#midi-btn").on("click", function(evt) {
-            alert("false");
+            //alert("false");
             /*
 			evt.preventDefault();
 			$("#midi-btn").off("click");
