@@ -25,7 +25,6 @@ $(function() {
     document.body.appendChild(panel);
     $("div[id='panel']")[0].innerHTML = "v.916 updates (12/1)";
     $("div[id='panel']")[0].innerHTML += "<br>";
-    $("div[id='panel']")[0].innerHTML += "<br> added changelog";
     $("div[id='panel']")[0].innerHTML += "<br> added timestamps to chat";
     $("div[id='panel']")[0].innerHTML += "<br> moved picture";
     $("div[id='panel']")[0].innerHTML += "<br> removed autoplayer";
@@ -61,6 +60,8 @@ $(function() {
     // custom variables
     //////////////////////////////////
     var gittar = false;
+    /*
+    search for
     var key_binding = {
         // f1-f9 for lower notes
         112: n("a", -2),
@@ -120,6 +121,7 @@ $(function() {
         78: n("b", 4),
         77: n("c", 5)
     };
+    */
     
     /*-------------- END CUSTOM --------------*/
     
