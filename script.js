@@ -9,7 +9,9 @@
 // ==/UserScript==
 /*------------------ CUSTOM SNOW -----------------*/
 $(function() {
-
+    // this versions number
+    
+    var thisver = "1.05";
     /*-------------- BEGIN CUSTOM --------------*/
 
     // christmas snow!!
@@ -124,10 +126,6 @@ $(function() {
     //christmasy
     style.innerHTML += '.expand{background:#fff}#room{background:#fff}.relative{background:#fff}body{background: #6b92b9;}canvassnow{display:block;z-index:-1;}'
     document.getElementsByTagName('head')[0].appendChild(style);
-
-    // this versions number
-    
-    var thisver = "1.04";
     
     // check version to notify if update
     var versionchk = document.createElement('div');
