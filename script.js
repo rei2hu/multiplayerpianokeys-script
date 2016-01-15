@@ -166,8 +166,8 @@ $(function() {
         $("#panel")[0].innerHTML += "Most recent version: " + versionNumber + 
                                     "<br>Your version: " + thisver + 
                                     "<br>type /help for commands" + 
-                                    "<br><br>1. press CHANGESOUND btn to change sound type. no reloading!!!" + 
-                                    "<br><br>2. paste room link in chat to go to room (cuz its auto join gmtpiano room whenever refresh)";
+                                    //"<br><br>1. press CHANGESOUND btn to change sound type. no reloading!!!" + 
+                                    "<br><br>1. paste room link in chat to go to room (cuz its auto join gmtpiano room whenever refresh)";
     });
 
 
