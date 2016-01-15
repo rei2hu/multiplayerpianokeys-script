@@ -112,7 +112,6 @@ $(function() {
      $("body").prepend('<canvas id="keyoverlay"></canvas>');
     var canvas = document.getElementById("keyoverlay");
     var ctx = canvas.getContext("2d");
-    ctx.textAlign = "center";
     var overlayW = window.innerWidth*.95;
     canvas.width = overlayW;
         //$('canvas[id="pianoreplaceent'+timessoundchange+'"]')[0].width();
@@ -167,7 +166,7 @@ $(function() {
                                     "<br>Your version: " + thisver + 
                                     "<br>type /help for commands" + 
                                     //"<br><br>1. press CHANGESOUND btn to change sound type. no reloading!!!" + 
-                                    "<br><br>1. paste room link in chat to go to room (cuz its auto join gmtpiano room whenever refresh)";
+                                    "<br><br>2. paste room link in chat to go to room (cuz its auto join gmtpiano room whenever refresh)";
     });
 
 
@@ -201,8 +200,9 @@ $(function() {
     $("#2").click(function(){
         if(!keyguide){
             for(i=0;i<52;i++){
+                ctx.textAlign = "center";
                 ctx.fillStyle = "black";
-                ctx.fillText(keys[i],(overlayW*.008) + i*(Math.floor(overlayW / 52)),window.innerHeight/1.5);
+                ctx.fillText(keys[i],(overlayW*.015) + i*(Math.floor(overlayW / 52)),window.innerHeight/1.5);
             }
             keyguide = true;
         }else{
