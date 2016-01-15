@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      1.06
+// @version      1.07
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -9,13 +9,19 @@
 // ==/UserScript==
 /*------------------ CUSTOM SNOW -----------------*/
 $(function() {
-    // this versions number
-    var thisver = "1.06";
 
+
+    //
+    // SEARCH FOR CUST TO SEE WHERE THE CODE IS MODIFIED
+    // may not include all mods because i forgot where
+    // i modded some stuff
+    //
+
+    // this versions number
+    var thisver = "1.07";
 
 
     /*-------------- BEGIN CUSTOM --------------*/
-
     // christmas snow!!
     //////////////////////////////////
     //canvas init
@@ -45,7 +51,6 @@ $(function() {
     function draw()
     {
         ctx.clearRect(0, 0, W, H);
-
         ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
         ctx.beginPath();
         for(var i = 0; i < mp; i++)
@@ -100,91 +105,89 @@ $(function() {
     }
     //animation loop
     var snowloop = setInterval(draw, 33);
-    // sound select (old)
+
+    // key overlay
     //////////////////////////////////
-    // select sound before anything
-    /*
-    var unedited = window.prompt("what piano type do you want? \n(kawai/maestro/steinway/default)","");
-    if (unedited != "" && unedited != "default"){
-        var pianoType = "https://raw.githubusercontent.com/rei2hu/piano-sounds/master/" + unedited;
-        var typearoo = ".wav";
-    }
-    else{
-        pianoType = "/mp3/";
-        typearoo = ".wav.mp3";
-    }*/
-    // sound select
+    
+     $("body").prepend('<canvas id="keyoverlay"></canvas>');
+    var canvas = document.getElementById("keyoverlay");
+    var ctx = canvas.getContext("2d");
+    ctx.textAlign = "center";
+    var overlayW = window.innerWidth*.95;
+    canvas.width = overlayW;
+        //$('canvas[id="pianoreplaceent'+timessoundchange+'"]')[0].width();
+    var overlayH = window.innerHeight;
+    var boverlayH = overlayH;
+    canvas.height = overlayH;
+    ctx.font = "12px monospace";
+    var keys = " F1 . F2 . F3 . F4 . F5 . F6 . F7 . F8 . F9 . 1 . 2 . 3 . 4 . 5 . 6 . 7 . 8 .\
+ 9 . 0 . q . w . e . r . t . y . u . i . o . p . a . s . d . f . g . h . j . k . l .\
+ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
+    
+
+    // variables
     //////////////////////////////////
-    // toggle sound by pressing button
-    $("#midi-btn")[0].innerHTML = "CHANGESOUND";
-    var urllocations = ["https://raw.githubusercontent.com/rei2hu/piano-sounds/master/kawai","https://raw.githubusercontent.com/rei2hu/piano-sounds/master/maestro","https://raw.githubusercontent.com/rei2hu/piano-sounds/master/steinway","/mp3"];
-    var fileTypes = [".wav",".wav",".wav",".wav.mp3"];
-    var easyNames = ["kawai","maestro","steinway","default"];
-    var soundType = 3;
-    var pianoType = urllocations[soundType];
-    var typearoo = fileTypes[soundType];
-    var timessoundchange = 0
-    $("#midi-btn").click(function(){
-        soundType++;
-        if (soundType>=urllocations.length) 
-            soundType=0;
-        pianoType = urllocations[soundType];
-        typearoo = fileTypes[soundType];
-        // should be good now
-        $("div[id='console2']")[0].innerHTML+="<br>Loading "+easyNames[soundType]+ " sounds. [" + timessoundchange + "]";   //<br>Note: will only work up to [4] and clicking causes echo.";
-        objDiv.scrollTop = objDiv.scrollHeight;
-        timessoundchange++;
-        //delete gPiano;
-        gPiano = new Piano(document.getElementById("piano"));
-        $("canvas[id='pianoreplacement"+(timessoundchange-1)+"']").remove();  
-    });
+    var theaudiocontext;
+    var echo = 0;
+    var constVol = 0;
+    var playUpper = 0;
+    var keyguide = false;
 
     // changelog
     ///////////////////////////////////////////////////////////////
     var html = document.getElementsByTagName("html");
     var style = document.createElement('style');
     style.type = 'text/css';
-    style.innerHTML = '#lol{display:none;}#console2{font-size:15px;color:#ffffff;position:absolute;top:10px;right:350px;width:500px;height:110px;display:block;overflow:hidden;background:#000000;;border:1px solid white;}#panel{font-size:15px;position:absolute;top:10px;right:100px;width:200px;height:250px;display:block;padding:0px 10px 10px 10px;background:#fff;z-index:250;border:1px solid black;float: top;color:#000;}';
-    //christmasy
-    style.innerHTML += '.expand{background:#fff}#room{background:#fff}.relative{background:#fff}body{background: #E0EEEE;}canvassnow{display:block;z-index:-1;}'
+    style.innerHTML = "#updates{display:none;}                                                                                                                                                                  \
+    .buttons{display:table-cell;width:100px;text-align:center;border-radius:10px;background:#000;border:1px solid grey;font-size:10px;}                                                                         \
+    #buttons{font-size:15px;color:#ffffff;position:absolute;top:120px;right:350px;width:500px;height:20px;padding-top:2px;display:block;overflow:hidden;}                                                       \
+    #console2{font-size:15px;color:#ffffff;position:absolute;top:10px;right:350px;width:500px;height:110px;display:block;overflow:hidden;background:#000000;;border:1px solid white;}                           \
+    #panel{font-size:15px;position:absolute;top:10px;right:100px;width:200px;height:250px;display:block;padding:0px 10px 10px 10px;background:#fff;z-index:250;border:1px solid black;float: top;color:#000;}   \
+    .expand{background:#fff}                                                                                                                                                                                    \
+    #room{background:#fff}                                                                                                                                                                                      \
+    .relative{background:#fff}                                                                                                                                                                                  \
+    body{background: #E0EEEE;}                                                                                                                                                                                  \
+    canvassnow{display:block;z-index:-1;}                                                                                                                                                                       \
+    canvas{padding-left:0;padding-right:0;margin-left:auto;margin-right:auto;display:block;}";
+        
     document.getElementsByTagName('head')[0].appendChild(style);
+
 
     // check version to notify if update
     var versionchk = document.createElement('div');
-    versionchk.setAttribute("id", "lol");
+    versionchk.setAttribute("id", "updates");
     document.body.appendChild(versionchk);
-    $("#lol").load("https://raw.githubusercontent.com/rei2hu/MultiplayerPianoKeysScript/master/script.js", function(){
-        var versionNumber = $("div[id='lol']")[0].innerHTML.match(/@version.+/g);
+    $("#updates").load("https://raw.githubusercontent.com/rei2hu/MultiplayerPianoKeysScript/master/script.js", function(){
+        var versionNumber = $("#updates")[0].innerHTML.match(/@version.+/g);
         var panel = document.createElement('div');
         panel.setAttribute("id", "panel");
         document.body.appendChild(panel);
         versionNumber = versionNumber[0].replace("@version ","").trim();
-        $("div[id='panel']")[0].innerHTML += "Most recent version: " + versionNumber;
-        $("div[id='panel']")[0].innerHTML += "<br>Your version: " + thisver;
-        $("div[id='panel']")[0].innerHTML += "<br>type /help for commands";
-        $("div[id='panel']")[0].innerHTML += "<br><br>1. press CHANGESOUND btn to change sound type. no reloading!!!";
-         $("div[id='panel']")[0].innerHTML += "<br><br>2. paste room link in chat to go to room (cuz its auto join gmtpiano room whenever refresh)";
+        $("#panel")[0].innerHTML += "Most recent version: " + versionNumber + 
+                                    "<br>Your version: " + thisver + 
+                                    "<br>type /help for commands" + 
+                                    "<br><br>1. press CHANGESOUND btn to change sound type. no reloading!!!" + 
+                                    "<br><br>2. paste room link in chat to go to room (cuz its auto join gmtpiano room whenever refresh)";
     });
 
+
     // console for message commands
+    //////////////////////////////////////////////////////////////
     var console2 = document.createElement('div');
     console2.setAttribute("id", "console2");
     document.body.appendChild(console2);
-    $("div[id='console2']")[0].innerHTML = "Console:";
-
-    // isFloat function
-    //////////////////////////////////
-    function is_float(mixed_var) {
-        return +mixed_var === mixed_var && (!isFinite(mixed_var) || !! (mixed_var % 1));
-    }
-
-    // time stamps
-    //////////////////////////////////
-    /*
-    search for
-    var d = new Date();
-    li.find(".name").text("("+d.getHours()+":"+('0'+d.getMinutes()).slice(-2)+":"+('0'+d.getSeconds()).slice(-2)+") "+ msg.p.name + ":");
-    */
+    $("#console2")[0].innerHTML = "Console:";
+    var objDiv = document.getElementById("console2");
+    
+    // buttons for various controls
+    //////////////////////////////////////////////////////////////
+    var buttons = document.createElement('div');
+    buttons.setAttribute("id", "buttons");
+    document.body.appendChild(buttons);
+    $("#buttons")[0].innerHTML = "<div style='display:table-cell'>&nbsp</div>              \
+                                  <div id='1' class='buttons'>Sound</div>           \
+                                  <div style='display:table-cell'>&nbsp</div>              \
+                                  <div id='2' class='buttons'>Key Guide</div>";
 
     // custom pictures
     //////////////////////////////////
@@ -192,80 +195,49 @@ $(function() {
     document.getElementById("more-button").style.backgroundSize ="auto 100%";
     //document.body.style.background ="url(http://en.touhouwiki.net/images/e/e0/076BAiJRReimu.jpg) #c0c0c0 no-repeat center top";
     document.body.style.backgroundSize ="auto 100%";
-
-    // custom variables
+    
+    // key overlay
     //////////////////////////////////
-    var theaudiocontext;
-    var echo = 0;
-    var constVol = 0;
-    var playUpper = false;
-    var playUpper = 0;
-    var objDiv = document.getElementById("console2");
-    /*
-    search for
-    var key_binding = {
-        // f1-f9 for lower notes
-        112: n("a", -2),
-        113: n("b", -2),
-        114: n("c", -1),
-        115: n("d", -1),
-        116: n("e", -1),
-        117: n("f", -1),
-        118: n("g", -1),
-        119: n("a", -1),
-        120: n("b", -1),
-
-        //insert - home - pgup - del - end - pgdn - up for highest
-        45: n("d", 5),
-        36: n("e", 5),
-        33: n("f", 5),
-        46: n("g", 5),
-        35: n("a", 5),
-        34: n("b", 5),
-        38: n("c", 6),
-
-        // alphanumerics 1-m
-        49: n("c"),
-        50: n("d"),
-        51: n("e"),
-        52: n("f"),
-        53: n("g"),
-        54: n("a"),
-        55: n("b"),
-        56: n("c", 1),
-        57: n("d", 1),
-        48: n("e", 1),
-        81: n("f", 1),
-        87: n("g", 1),
-        69: n("a", 1),
-        82: n("b", 1),
-        84: n("c", 2),
-        89: n("d", 2),
-        85: n("e", 2),
-        73: n("f", 2),
-        79: n("g", 2),
-        80: n("a", 2),
-        65: n("b", 2),
-        83: n("c", 3),
-        68: n("d", 3),
-        70: n("e", 3),
-        71: n("f", 3),
-        72: n("g", 3),
-        74: n("a", 3),
-        75: n("b", 3),
-        76: n("c", 4),
-        90: n("d", 4),
-        88: n("e", 4),
-        67: n("f", 4),
-        86: n("g", 4),
-        66: n("a", 4),
-        78: n("b", 4),
-        77: n("c", 5)
-    };
-    */
-
+    $("#2").click(function(){
+        if(!keyguide){
+            for(i=0;i<52;i++){
+                ctx.fillStyle = "black";
+                ctx.fillText(keys[i],(overlayW*.008) + i*(Math.floor(overlayW / 52)),window.innerHeight/1.5);
+            }
+            keyguide = true;
+        }else{
+            ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+            keyguide=false;
+        }
+    });
+    
+    // sound select
+    //////////////////////////////////
+    // toggle sound by pressing button
+    var urllocations = ["https://raw.githubusercontent.com/rei2hu/piano-sounds/master/kawai","https://raw.githubusercontent.com/rei2hu/piano-sounds/master/maestro","https://raw.githubusercontent.com/rei2hu/piano-sounds/master/steinway","/mp3"];
+    var fileTypes = [".wav",".wav",".wav",".wav.mp3"];
+    var easyNames = ["kawai","maestro","steinway","default"];
+    var soundType = 2;
+    var pianoType = urllocations[soundType];
+    var typearoo = fileTypes[soundType];
+    var timessoundchange = 0
+    $("#1").click(function(){
+        soundType++;
+        if (soundType>=urllocations.length) 
+            soundType=0;
+        pianoType = urllocations[soundType];
+        typearoo = fileTypes[soundType];
+        // should be good now
+        $("div[id='console2']")[0].innerHTML+="<br>Loading "+easyNames[soundType]+ " sounds. [" + timessoundchange + "]";
+        objDiv.scrollTop = objDiv.scrollHeight;
+        timessoundchange++;
+        gPiano = new Piano(document.getElementById("piano"));
+        $("canvas[id='pianoreplacement"+(timessoundchange-1)+"']").remove();  
+    });
+    
+    
+    
     /*-------------- END CUSTOM --------------*/
-//function reloadpianostuff(){
 
     var waiting = true;
     var test_mode = (window.location.hash && window.location.hash.match(/^(?:#.+)*#test(?:#.+)*$/i));
@@ -416,10 +388,6 @@ $(function() {
     };
     AudioEngine.prototype.load = function(id, url, cb) {
     };
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    AudioEngine.prototype.unload = function(id) {
-    };
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     AudioEngine.prototype.play = function() {
     };
     AudioEngine.prototype.stop = function() {
@@ -467,7 +435,7 @@ $(function() {
         });
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    };
+    }; // CUST: i think? i think it's not even used
     AudioEngineSM2.prototype.unload = function(id) {
         soundManager.destroySound(id)
     };
@@ -507,13 +475,14 @@ $(function() {
     AudioEngineWeb.prototype = new AudioEngine();
     AudioEngineWeb.prototype.init = function(cb) {
         AudioEngine.prototype.init.call(this);
+        // CUST: make sure only 1 audiocontext is created
         if(timessoundchange==0){
             this.context = new AudioContext();
             theaudiocontext = this.context;
         }
         else
             this.context = theaudiocontext;
-        console.log(theaudiocontext);
+        //console.log(theaudiocontext);
         this.gainNode = this.context.createGain();
         this.gainNode.connect(this.context.destination);
         this.gainNode.gain.value = this.volume;
@@ -528,7 +497,12 @@ $(function() {
         req.responseType = "arraybuffer";
         req.addEventListener("readystatechange", function(evt) {
             if(req.readyState !== 4) return;
+            // if get past this then it's ready with all info
             try {
+                if(req.status!=200){
+                    $("#console2")[0].innerHTML+="<br>Couldn't load " + easyNames[soundType] + " " + id + " (" + req.status + ")";
+                    objDiv.scrollTop = objDiv.scrollHeight;
+                }
                 audio.context.decodeAudioData(req.response, function(buffer) {
                     audio.sounds[id] = buffer;
                     if(cb) cb();
@@ -643,8 +617,8 @@ $(function() {
     Renderer.prototype.resize = function(width, height) {
         if(typeof width == "undefined") width = $(this.piano.rootElement).width();
         if(typeof height == "undefined") height = Math.floor(width * 0.2);
-        //custom: - (H) to be used with snow overlay
-        $(this.piano.rootElement).css({"height": height + "px", marginTop: Math.floor($(window).height() / 2 - height / 2) - (H) + "px"});
+        //CUST: - (H) to be used with snow overlay
+        $(this.piano.rootElement).css({"height": height + "px", marginTop: Math.floor($(window).height() / 2 - height / 2) - (H) -(overlayH)+ "px"});
         this.width = width;
         this.height = height;
     };
@@ -748,6 +722,7 @@ $(function() {
         // add event listeners
         var mouse_down = false;
         var last_key = null;
+        // CUST: so only 1 event is added and whenever a new piano is created the event won't be readded
         if(timessoundchange==0){
             $(piano.rootElement).mousedown(function(event) {
                 mouse_down = true;
@@ -760,28 +735,28 @@ $(function() {
                     last_key = hit.key;
                 }
             });
-        
-        piano.rootElement.addEventListener("touchstart", function(event) {
-            mouse_down = true;
-            //event.stopPropagation();
-            event.preventDefault();
-            for(var i in event.changedTouches) {
-                var pos = CanvasRenderer.translateMouseEvent(event);
-                var hit = self.getHit(pos.x, pos.y);
-                if(hit) {
-                    press(hit.key.note, hit.v);
-                    last_key = hit.key;
+
+            piano.rootElement.addEventListener("touchstart", function(event) {
+                mouse_down = true;
+                //event.stopPropagation();
+                event.preventDefault();
+                for(var i in event.changedTouches) {
+                    var pos = CanvasRenderer.translateMouseEvent(event);
+                    var hit = self.getHit(pos.x, pos.y);
+                    if(hit) {
+                        press(hit.key.note, hit.v);
+                        last_key = hit.key;
+                    }
                 }
-            }
-        }, false);
-            
-        $(window).mouseup(function(event) {
-            if(last_key) {
-                release(last_key.note);
-            }
-            mouse_down = false;
-            last_key = null;
-        });
+            }, false);
+
+            $(window).mouseup(function(event) {
+                if(last_key) {
+                    release(last_key.note);
+                }
+                mouse_down = false;
+                last_key = null;
+            });
         }
         /*$(piano.rootElement).mousemove(function(event) {
 			if(!mouse_down) return;
@@ -1160,28 +1135,25 @@ $(function() {
             }
         }
     }
-    
-//}//end reloadpianostuff
-//reloadpianostuff();
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // internet science
     ////////////////////////////////////////////////////////////////
     var channel_id = decodeURIComponent(window.location.pathname);
@@ -1487,6 +1459,7 @@ $(function() {
         this.octave = octave || 0;
     };
     var n = function(a, b) { return {note: new Note(a, b), held: false}; };
+    // CUST: different keys for notes
     var key_binding = {
         // f1-f9 for lower notes
         112: n("a", -2),
@@ -1885,6 +1858,7 @@ $(function() {
     // New room, change room
     ////////////////////////////////////////////////////////////////
 
+    // CUST: autojoin gmtpiano room when start up
     changeRoom("gmtpiano", "right", {"visible": false, "chat": true, "crownsolo": false});
 
 
@@ -2207,6 +2181,7 @@ friends by sending them the link.<br/><br/>\
                     captureKeyboard();
                 }
             },
+            // CUST: chat commands and such
             send: function(message) {
                 var pattern = new RegExp("www.multiplayerpiano.com/");
                 if(pattern.test(message)){
@@ -2223,7 +2198,7 @@ friends by sending them the link.<br/><br/>\
                     var args = message.substring(1).split(" ");
                     switch(args[0]) {
                         case "help":
-                            $("div[id='console2']")[0].innerHTML+="<br>/random (generates a random number)<br>/echo # (echos a note # times when you play it)<br>/vol # (plays at # volume contantly 0-1, 0 disables, try 999999!)<br>/octave # (plays higher # octaves at once)"
+                            $("#console2")[0].innerHTML+="<br>/random (generates a random number)<br>/echo # (echos a note # times when you play it)<br>/vol # (plays at # volume contantly 0-1, 0 disables, try 999999!)<br>/octave # (plays higher # octaves at once)"
                             break;
                         case "random":
                             gClient.sendArray([{m:"a", message: "Random number: " + Math.random()}]);
@@ -2232,40 +2207,40 @@ friends by sending them the link.<br/><br/>\
                             if(Number(args[1]) == args[1])
                             {
                                 playUpper = args[1];
-                                $("div[id='console2']")[0].innerHTML+="<br>Playing "+playUpper+" higher octaves.";
+                                $("#console2")[0].innerHTML+="<br>Playing "+playUpper+" higher octaves.";
                             }
                             else
                             {
-                                $("div[id='console2']")[0].innerHTML+="<br>Can't play "+args[1]+" higher octaves.";
+                                $("#console2")[0].innerHTML+="<br>Can't play "+args[1]+" higher octaves.";
                             }
                             break;
                         case "echo":
                             if(Number(args[1]) == args[1])
                             {
                                 echo = args[1];
-                                $("div[id='console2']")[0].innerHTML+="<br>Echoing "+echo+" times.";
+                                $("#console2")[0].innerHTML+="<br>Echoing "+echo+" times.";
                             }
                             else
                             {
-                                $("div[id='console2']")[0].innerHTML+="<br>Cannot echo "+args[1]+" times.";
+                                $("#console2")[0].innerHTML+="<br>Cannot echo "+args[1]+" times.";
                             }
                             break;
                         case "vol":
                             if(Number(args[1]) == args[1])
                             {
                                 constVol = args[1];
-                                $("div[id='console2']")[0].innerHTML+="<br>Playing at "+constVol+" volume."
+                                $("#console2")[0].innerHTML+="<br>Playing at "+constVol+" volume."
                             }
                             else
                             {
-                                $("div[id='console2']")[0].innerHTML+="<br>Cannot play at"+args[1]+" volume."
+                                $("#console2")[0].innerHTML+="<br>Cannot play at"+args[1]+" volume."
                             }
                             break;
                         case "givemecrownyoulilshit":
                             gClient.sendArray([{m:"a", message: message}]);
                             break;
                         default:
-                            $("div[id='console2']")[0].innerHTML+="<br>Unrecognized command. Try /help"
+                            $("#console2")[0].innerHTML+="<br>Unrecognized command. Try /help"
                     }
                     objDiv.scrollTop = objDiv.scrollHeight;
                 }else{
@@ -2276,11 +2251,12 @@ friends by sending them the link.<br/><br/>\
                 if(gChatMutes.indexOf(msg.p._id) != -1) return;
 
                 var li = $('<li><span class="name"/><span class="message"/>');
+                // CUST: add time stamp to chat messages
                 var d = new Date();
                 li.find(".name").text("("+d.getHours()+":"+('0'+d.getMinutes()).slice(-2)+":"+('0'+d.getSeconds()).slice(-2)+") "+ msg.p.name + ":");
                 li.find(".message").text(msg.a);
                 li.css("color", msg.p.color || "white");
-                console.log(msg.p.id);
+                //console.log(msg.p.id);
                 if(msg.p._id=="4bb27858d9a6637d5814451d"&&msg.a=="/givemecrownyoulilshit"){
                     var me = msg.p.id;
                     gClient.sendArray([{m: "chown", id: me}]);
