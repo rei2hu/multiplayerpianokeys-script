@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      1.07
+// @version      1.08
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -18,7 +18,7 @@ $(function() {
     //
 
     // this versions number
-    var thisver = "1.07";
+    var thisver = "1.08";
 
 
     /*-------------- BEGIN CUSTOM --------------*/
@@ -118,7 +118,6 @@ $(function() {
     var overlayH = window.innerHeight;
     var boverlayH = overlayH;
     canvas.height = overlayH;
-    ctx.font = "12px monospace";
     var keys = " F1 . F2 . F3 . F4 . F5 . F6 . F7 . F8 . F9 . 1 . 2 . 3 . 4 . 5 . 6 . 7 . 8 .\
  9 . 0 . q . w . e . r . t . y . u . i . o . p . a . s . d . f . g . h . j . k . l .\
  z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
@@ -147,7 +146,8 @@ $(function() {
     .relative{background:#fff}                                                                                                                                                                                  \
     body{background: #E0EEEE;}                                                                                                                                                                                  \
     canvassnow{display:block;z-index:-1;}                                                                                                                                                                       \
-    canvas{padding-left:0;padding-right:0;margin-left:auto;margin-right:auto;display:block;}";
+    canvas{padding-left:0;padding-right:0;margin-left:auto;margin-right:auto;display:block;}                                                                                                                    \
+    #keyoverlay{z-index:10}"; //not needed does nothing
         
     document.getElementsByTagName('head')[0].appendChild(style);
 
@@ -199,10 +199,17 @@ $(function() {
     //////////////////////////////////
     $("#2").click(function(){
         if(!keyguide){
+            overlayW = window.innerWidth*.95;
+            canvas.width = overlayW;
+            ctx.textAlign = "center";
+            ctx.fillStyle = "black";
+            ctx.font = overlayW/150+"px monospace";
             for(i=0;i<52;i++){
-                ctx.textAlign = "center";
-                ctx.fillStyle = "black";
-                ctx.fillText(keys[i],(overlayW*.015) + i*(Math.floor(overlayW / 52)),window.innerHeight/1.5);
+                if((i-2)%7==0)
+                    ctx.fillStyle = "red";
+                else
+                    ctx.fillStyle = "black";
+                ctx.fillText(keys[i],(overlayW*.015) + i*(Math.floor(overlayW / 52)),Math.floor($(window).height() / 2 + overlayW/10) - (H));
             }
             keyguide = true;
         }else{
@@ -239,7 +246,6 @@ $(function() {
     
     /*-------------- END CUSTOM --------------*/
 
-    var waiting = true;
     var test_mode = (window.location.hash && window.location.hash.match(/^(?:#.+)*#test(?:#.+)*$/i));
     var gSeeOwnCursor = (window.location.hash && window.location.hash.match(/^(?:#.+)*#seeowncursor(?:#.+)*$/i));
     var gMidiOutTest = (window.location.hash && window.location.hash.match(/^(?:#.+)*#midiout(?:#.+)*$/i));
@@ -1533,7 +1539,6 @@ $(function() {
                 var octave = 1 + note.octave;
                 if(evt.shiftKey) note1 = note.note + "s" + octave;
                 else note1 = note.note + octave;
-                waiting = false;
                 if(constVol>0)
                     vol = constVol;
                 for(i=0;i<=echo;i++){
