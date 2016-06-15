@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      1.08
+// @version      1.09
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -18,7 +18,7 @@ $(function() {
     //
 
     // this versions number
-    var thisver = "1.08";
+    var thisver = "1.09";
 
 
     /*-------------- BEGIN CUSTOM --------------*/
@@ -118,7 +118,7 @@ $(function() {
     var overlayH = window.innerHeight;
     var boverlayH = overlayH;
     canvas.height = overlayH;
-    var keys = " F1 . F2 . F3 . F4 . F5 . F6 . F7 . F8 . F9 . 1 . 2 . 3 . 4 . 5 . 6 . 7 . 8 .\
+    var keys = "left.right. F1 . F2 . F3 . F4 . F5 . F6 . F7 . 1 . 2 . 3 . 4 . 5 . 6 . 7 . 8 .\
  9 . 0 . q . w . e . r . t . y . u . i . o . p . a . s . d . f . g . h . j . k . l .\
  z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
     
@@ -165,8 +165,8 @@ $(function() {
         $("#panel")[0].innerHTML += "Most recent version: " + versionNumber + 
                                     "<br>Your version: " + thisver + 
                                     "<br>type /help for commands" + 
-                                    //"<br><br>1. press CHANGESOUND btn to change sound type. no reloading!!!" + 
-                                    "<br><br>2. paste room link in chat to go to room (cuz its auto join gmtpiano room whenever refresh)";
+                                    "<br><br>1. paste room link in chat to go to room (cuz its auto join gmtpiano room whenever refresh)" +\
+                                    "<br><br>2. some audiosyncreader glitches that may occur when changing sounds too much or too quickly and will crash the site.";
     });
 
 
@@ -177,17 +177,30 @@ $(function() {
     document.body.appendChild(console2);
     $("#console2")[0].innerHTML = "Console:";
     var objDiv = document.getElementById("console2");
-    
+
     // buttons for various controls
     //////////////////////////////////////////////////////////////
     var buttons = document.createElement('div');
     buttons.setAttribute("id", "buttons");
-    document.body.appendChild(buttons);
-    $("#buttons")[0].innerHTML = "<div style='display:table-cell'>&nbsp</div>              \
-                                  <div id='1' class='buttons'>Sound</div>           \
-                                  <div style='display:table-cell'>&nbsp</div>              \
-                                  <div id='2' class='buttons'>Key Guide</div>";
+    //$("#bottom").children(".relative")[0].appendChild(buttons);
+    //$("#buttons")[0].innerHTML = "<button type='button' id='1'>Sound</button>           \
+    //                              <button type='button' id='2'>Key Guide</button>";
 
+    $("#bottom").children(".relative")[0].innerHTML += "<div type='button' class='ugly-button translate' style='position: absolute;left: 540px;top: 32px;' id='1'>Change Sound</div>\
+                                                        <div type='button' class='ugly-button translate' style='position: absolute;left: 660px;top: 4px;' id='2'>Key Guide</div>\
+<select style='position:absolute;left:660px;top:34px' id='3'>\
+  <option value='0'>Kawai</option>\
+  <option value='1'>Maestro</option>\
+  <option value='2'>Steinway</option>\
+  <option value='3'>Default</option>\
+  <option value='4'>Great and Soft</option>\
+  <option value='5'>Loud and Proud</option>\
+  <option value='6'>New Piano</option>\
+  <option value='7'>HD Piano</option>\
+  <option value='8'>Harpischord</option>\
+  <option value='9'>Clear</option>\
+  <option value='10'>Klaver</option>\
+</select>";
     // custom pictures
     //////////////////////////////////
     document.getElementById("more-button").style.background = "url(http://en.touhouwiki.net/images/e/e0/076BAiJRReimu.jpg)";  
@@ -221,21 +234,39 @@ $(function() {
     // sound select
     //////////////////////////////////
     // toggle sound by pressing button
-    var urllocations = ["https://raw.githubusercontent.com/rei2hu/piano-sounds/master/kawai","https://raw.githubusercontent.com/rei2hu/piano-sounds/master/maestro","https://raw.githubusercontent.com/rei2hu/piano-sounds/master/steinway","/mp3"];
-    var fileTypes = [".wav",".wav",".wav",".wav.mp3"];
-    var easyNames = ["kawai","maestro","steinway","default"];
-    var soundType = 2;
+    var urllocations = ["https://raw.githubusercontent.com/rei2hu/piano-sounds/master/kawai/",
+                        "https://raw.githubusercontent.com/rei2hu/piano-sounds/master/maestro/",
+                        "https://raw.githubusercontent.com/rei2hu/piano-sounds/master/steinway/",
+                        "/mp3/",
+                        "https://dl.dropboxusercontent.com/u/216104606/GreatAndSoftPiano/",
+                        "https://dl.dropboxusercontent.com/u/216104606/LoudAndProudPiano/",
+                        "https://dl.dropboxusercontent.com/u/258840068/CustomSounds/NewPiano/",
+                        "https://dl.dropboxusercontent.com/u/258840068/CustomSounds/HDPiano/",
+                        "https://dl.dropboxusercontent.com/u/24213061/Harpischord/",
+                        "https://dl.dropboxusercontent.com/u/24213061/ClearPiano/",
+                        "https://dl.dropboxusercontent.com/u/70730519/Klaver/"];
+    var fileTypes = [".wav",
+                     ".wav",
+                     ".wav",
+                     ".wav.mp3",
+                     ".mp3",
+                     ".mp3",
+                     ".mp3",
+                     ".wav",
+                     ".wav",
+                     ".wav",
+                     ".wav"];
+    var easyNames = ["kawai","maestro","steinway","default","greatandsoftpiano","loudandproudpiano","newpiano","hdpiano","harpischord","clearpiano","klaver"];
+    var soundType = 4;
     var pianoType = urllocations[soundType];
     var typearoo = fileTypes[soundType];
     var timessoundchange = 0
     $("#1").click(function(){
-        soundType++;
-        if (soundType>=urllocations.length) 
-            soundType=0;
+        soundType = $("#3")[0].value;
         pianoType = urllocations[soundType];
         typearoo = fileTypes[soundType];
         // should be good now
-        $("div[id='console2']")[0].innerHTML+="<br>Loading "+easyNames[soundType]+ " sounds. [" + timessoundchange + "]";
+        $("div[id='console2']")[0].innerHTML+="<br>Loading "+easyNames[soundType]+ " sounds.";
         objDiv.scrollTop = objDiv.scrollHeight;
         timessoundchange++;
         gPiano = new Piano(document.getElementById("piano"));
@@ -1061,7 +1092,7 @@ $(function() {
                 if(!piano.keys.hasOwnProperty(i)) continue;
                 (function() {
                     var key = piano.keys[i];
-                    piano.audio.load(key.note, pianoType + "/" + key.note + typearoo, function() {
+                    piano.audio.load(key.note, pianoType + key.note + typearoo, function() {
                         key.loaded = true;
                         key.timeLoaded = Date.now();
                         if(key.domElement) // todo: move this to renderer somehow
@@ -1467,16 +1498,17 @@ $(function() {
     var n = function(a, b) { return {note: new Note(a, b), held: false}; };
     // CUST: different keys for notes
     var key_binding = {
-        // f1-f9 for lower notes
-        112: n("a", -2),
-        113: n("b", -2),
-        114: n("c", -1),
-        115: n("d", -1),
-        116: n("e", -1),
-        117: n("f", -1),
-        118: n("g", -1),
-        119: n("a", -1),
-        120: n("b", -1),
+        // left, right
+        // f1-f7 for lower notes
+        37: n("a", -2),
+        39: n("b", -2),
+        112: n("c", -1),
+        113: n("d", -1),
+        114: n("e", -1),
+        115: n("f", -1),
+        116: n("g", -1),
+        117: n("a", -1),
+        128: n("b", -1),
 
         //insert - home - pgup - del - end - pgdn - up for highest
         45: n("d", 5),
