@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      1.09
+// @version      2.0
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -18,7 +18,7 @@ $(function() {
     //
 
     // this versions number
-    var thisver = "1.09";
+    var thisver = "2.0";
 
 
     /*-------------- BEGIN CUSTOM --------------*/
@@ -1508,7 +1508,7 @@ $(function() {
         115: n("f", -1),
         116: n("g", -1),
         117: n("a", -1),
-        128: n("b", -1),
+        118: n("b", -1),
 
         //insert - home - pgup - del - end - pgdn - up for highest
         45: n("d", 5),
