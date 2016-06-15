@@ -1,16 +1,180 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      2.0
+// @version      2.1
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
 // @grant        none
 // ==/UserScript==
 /*------------------ CUSTOM SNOW -----------------*/
+
 $(function() {
-
-
+    function getKey(value,table){
+        for(var key in table){
+            if(table[key] === value){
+                return key;
+            }
+        }
+        return null;
+    };
+    var keyCodes = {
+        3 : "break",
+        8 : "backspace / delete",
+        9 : "tab",
+        12 : 'clear',
+        13 : "enter",
+        16 : "shift",
+        17 : "ctrl ",
+        18 : "alt",
+        19 : "pause/break",
+        20 : "caps lock",
+        27 : "escape",
+        32 : "spacebar",
+        33 : "page up",
+        34 : "page down",
+        35 : "end",
+        36 : "home ",
+        37 : "left arrow ",
+        38 : "up arrow ",
+        39 : "right arrow",
+        40 : "down arrow ",
+        41 : "select",
+        42 : "print",
+        43 : "execute",
+        44 : "Print Screen",
+        45 : "insert ",
+        46 : "delete",
+        48 : "0",
+        49 : "1",
+        50 : "2",
+        51 : "3",
+        52 : "4",
+        53 : "5",
+        54 : "6",
+        55 : "7",
+        56 : "8",
+        57 : "9",
+        58 : ":",
+        59 : "semicolon (firefox), equals",
+        60 : "<",
+        61 : "equals (firefox)",
+        63 : "ß",
+        64 : "@ (firefox)",
+        65 : "a",
+        66 : "b",
+        67 : "c",
+        68 : "d",
+        69 : "e",
+        70 : "f",
+        71 : "g",
+        72 : "h",
+        73 : "i",
+        74 : "j",
+        75 : "k",
+        76 : "l",
+        77 : "m",
+        78 : "n",
+        79 : "o",
+        80 : "p",
+        81 : "q",
+        82 : "r",
+        83 : "s",
+        84 : "t",
+        85 : "u",
+        86 : "v",
+        87 : "w",
+        88 : "x",
+        89 : "y",
+        90 : "z",
+        91 : "Windows Key / Left ⌘ / Chromebook Search key",
+        92 : "right window key ",
+        93 : "Windows Menu / Right ⌘",
+        96 : "numpad 0 ",
+        97 : "numpad 1 ",
+        98 : "numpad 2 ",
+        99 : "numpad 3 ",
+        100 : "numpad 4 ",
+        101 : "numpad 5 ",
+        102 : "numpad 6 ",
+        103 : "numpad 7 ",
+        104 : "numpad 8 ",
+        105 : "numpad 9 ",
+        106 : "multiply ",
+        107 : "add",
+        108 : "numpad period (firefox)",
+        109 : "subtract ",
+        110 : "decimal point",
+        111 : "divide ",
+        112 : "f1 ",
+        113 : "f2 ",
+        114 : "f3 ",
+        115 : "f4 ",
+        116 : "f5 ",
+        117 : "f6 ",
+        118 : "f7 ",
+        119 : "f8 ",
+        120 : "f9 ",
+        121 : "f10",
+        122 : "f11",
+        123 : "f12",
+        124 : "f13",
+        125 : "f14",
+        126 : "f15",
+        127 : "f16",
+        128 : "f17",
+        129 : "f18",
+        130 : "f19",
+        131 : "f20",
+        132 : "f21",
+        133 : "f22",
+        134 : "f23",
+        135 : "f24",
+        144 : "num lock ",
+        145 : "scroll lock",
+        160 : "^",
+        161: '!',
+        163 : "#",
+        164: '$',
+        165: 'ù',
+        166 : "page backward",
+        167 : "page forward",
+        169 : "closing paren (AZERTY)",
+        170: '*',
+        171 : "~ + * key",
+        173 : "minus (firefox), mute/unmute",
+        174 : "decrease volume level",
+        175 : "increase volume level",
+        176 : "next",
+        177 : "previous",
+        178 : "stop",
+        179 : "play/pause",
+        180 : "e-mail",
+        181 : "mute/unmute (firefox)",
+        182 : "decrease volume level (firefox)",
+        183 : "increase volume level (firefox)",
+        186 : "semi-colon / ñ",
+        187 : "equal sign ",
+        188 : "comma",
+        189 : "dash ",
+        190 : "period ",
+        191 : "forward slash / ç",
+        192 : "grave accent / ñ",
+        193 : "?, / or °",
+        194 : "numpad period (chrome)",
+        219 : "open bracket ",
+        220 : "back slash ",
+        221 : "close bracket ",
+        222 : "single quote ",
+        223 : "`",
+        224 : "left or right ⌘ key (firefox)",
+        225 : "altgr",
+        226 : "< /git >",
+        230 : "GNOME Compose Key",
+        233 : "XF86Forward",
+        234 : "XF86Back",
+        255 : "toggle touchpad"
+    };
     //
     // SEARCH FOR CUST TO SEE WHERE THE CODE IS MODIFIED
     // may not include all mods because i forgot where
@@ -18,7 +182,7 @@ $(function() {
     //
 
     // this versions number
-    var thisver = "2.0";
+    var thisver = "2.1";
 
 
     /*-------------- BEGIN CUSTOM --------------*/
@@ -108,20 +272,20 @@ $(function() {
 
     // key overlay
     //////////////////////////////////
-    
-     $("body").prepend('<canvas id="keyoverlay"></canvas>');
+
+    $("body").prepend('<canvas id="keyoverlay"></canvas>');
     var canvas = document.getElementById("keyoverlay");
     var ctx = canvas.getContext("2d");
     var overlayW = window.innerWidth*.95;
     canvas.width = overlayW;
-        //$('canvas[id="pianoreplaceent'+timessoundchange+'"]')[0].width();
+    //$('canvas[id="pianoreplaceent'+timessoundchange+'"]')[0].width();
     var overlayH = window.innerHeight;
     var boverlayH = overlayH;
     canvas.height = overlayH;
     var keys = "left.right. F1 . F2 . F3 . F4 . F5 . F6 . F7 . 1 . 2 . 3 . 4 . 5 . 6 . 7 . 8 .\
- 9 . 0 . q . w . e . r . t . y . u . i . o . p . a . s . d . f . g . h . j . k . l .\
- z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
-    
+9 . 0 . q . w . e . r . t . y . u . i . o . p . a . s . d . f . g . h . j . k . l .\
+z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
+
 
     // variables
     //////////////////////////////////
@@ -130,6 +294,7 @@ $(function() {
     var constVol = 0;
     var playUpper = 0;
     var keyguide = false;
+    var transposenum = 0;
 
     // changelog
     ///////////////////////////////////////////////////////////////
@@ -137,20 +302,20 @@ $(function() {
     var style = document.createElement('style');
     style.type = 'text/css';
     style.innerHTML = "#updates{display:none;}                                                                                                                                                                  \
-    .buttons{display:table-cell;width:100px;text-align:center;border-radius:10px;background:#000;border:1px solid grey;font-size:10px;}                                                                         \
-    #buttons{font-size:15px;color:#ffffff;position:absolute;top:120px;right:350px;width:500px;height:20px;padding-top:2px;display:block;overflow:hidden;}                                                       \
-    #console2{font-size:15px;color:#ffffff;position:absolute;top:10px;right:350px;width:500px;height:110px;display:block;overflow:hidden;background:#000000;;border:1px solid white;}                           \
-    #panel{font-size:15px;position:absolute;top:10px;right:100px;width:200px;height:250px;display:block;padding:0px 10px 10px 10px;background:#fff;z-index:250;border:1px solid black;float: top;color:#000;}   \
-    .expand{background:#fff}                                                                                                                                                                                    \
-    #room{background:#fff}                                                                                                                                                                                      \
-    .relative{background:#fff}                                                                                                                                                                                  \
-    body{background: #E0EEEE;}                                                                                                                                                                                  \
-    canvassnow{display:block;z-index:-1;}                                                                                                                                                                       \
-    canvas{padding-left:0;padding-right:0;margin-left:auto;margin-right:auto;display:block;}                                                                                                                    \
-    #keyoverlay{z-index:10}"; //not needed does nothing
-        
-    document.getElementsByTagName('head')[0].appendChild(style);
+.buttons{display:table-cell;width:100px;text-align:center;border-radius:10px;background:#000;border:1px solid grey;font-size:10px;}                                                                         \
+#buttons{font-size:15px;color:#ffffff;position:absolute;top:120px;right:350px;width:500px;height:20px;padding-top:2px;display:block;overflow:hidden;}                                                       \
+#console2{font-size:15px;color:#ffffff;position:absolute;top:10px;right:350px;width:500px;height:110px;display:block;overflow:hidden;background:#000000;;border:1px solid white;}                           \
+#panel{font-size:12px;position:absolute;top:10px;right:100px;width:200px;height:250px;display:block;padding:0px 10px 10px 10px;background:#fff;z-index:250;border:1px solid black;float: top;color:#000;}   \
+.expand{background:#fff}                                                                                                                                                                                    \
+#room{background:#fff}                                                                                                                                                                                      \
+.relative{background:#fff}                                                                                                                                                                                  \
+body{background: #E0EEEE;}                                                                                                                                                                                  \
+canvassnow{display:block;z-index:-1;}                                                                                                                                                                       \
+canvas{padding-left:0;padding-right:0;margin-left:auto;margin-right:auto;display:block;}                                                                                                                    \
+#keyoverlay{z-index:10}"; //not needed does nothing
 
+    document.getElementsByTagName('head')[0].appendChild(style);
+    var transpose = false;
 
     // check version to notify if update
     var versionchk = document.createElement('div');
@@ -163,10 +328,11 @@ $(function() {
         document.body.appendChild(panel);
         versionNumber = versionNumber[0].replace("@version ","").trim();
         $("#panel")[0].innerHTML += "Most recent version: " + versionNumber + 
-                                    "<br>Your version: " + thisver + 
-                                    "<br>type /help for commands" + 
-                                    "<br><br>1. paste room link in chat to go to room (cuz its auto join gmtpiano room whenever refresh)" +
-                                    "<br><br>2. some audiosyncreader glitches that may occur when changing sounds too much or too quickly and will crash the site.";
+            "<br>Your version: " + thisver + 
+            "<br>type /help for commands" + 
+            "<br><br>1. paste room links in chat to join them" +
+            "<br><br>2. transposer (/transpose #)" + 
+            "<br><br>3. sequencer (input box at bottom)";
     });
 
 
@@ -187,27 +353,28 @@ $(function() {
     //                              <button type='button' id='2'>Key Guide</button>";
 
     $("#bottom").children(".relative")[0].innerHTML += "<div type='button' class='ugly-button translate' style='position: absolute;left: 540px;top: 32px;' id='1'>Change Sound</div>\
-                                                        <div type='button' class='ugly-button translate' style='position: absolute;left: 660px;top: 4px;' id='2'>Key Guide</div>\
+<div type='button' class='ugly-button translate' style='position: absolute;left: 660px;top: 4px;' id='2'>Key Guide</div>\
 <select style='position:absolute;left:660px;top:34px' id='3'>\
-  <option value='0'>Kawai</option>\
-  <option value='1'>Maestro</option>\
-  <option value='2'>Steinway</option>\
-  <option value='3'>Default</option>\
-  <option value='4'>Great and Soft</option>\
-  <option value='5'>Loud and Proud</option>\
-  <option value='6'>New Piano</option>\
-  <option value='7'>HD Piano</option>\
-  <option value='8'>Harpischord</option>\
-  <option value='9'>Clear</option>\
-  <option value='10'>Klaver</option>\
-</select>";
+<option value='0'>Kawai</option>\
+<option value='1'>Maestro</option>\
+<option value='2'>Steinway</option>\
+<option value='3'>Default</option>\
+<option value='4'>Great and Soft</option>\
+<option value='5'>Loud and Proud</option>\
+<option value='6'>New Piano</option>\
+<option value='7'>HD Piano</option>\
+<option value='8'>Harpischord</option>\
+<option value='9'>Clear</option>\
+<option value='10'>Klaver</option>\
+</select>\
+<input id='4' type='text' style='position:absolute;left:780px;top:34px'></input>";
     // custom pictures
     //////////////////////////////////
     document.getElementById("more-button").style.background = "url(http://en.touhouwiki.net/images/e/e0/076BAiJRReimu.jpg)";  
     document.getElementById("more-button").style.backgroundSize ="auto 100%";
     //document.body.style.background ="url(http://en.touhouwiki.net/images/e/e0/076BAiJRReimu.jpg) #c0c0c0 no-repeat center top";
     document.body.style.backgroundSize ="auto 100%";
-    
+
     // key overlay
     //////////////////////////////////
     $("#2").click(function(){
@@ -230,7 +397,7 @@ $(function() {
             keyguide=false;
         }
     });
-    
+
     // sound select
     //////////////////////////////////
     // toggle sound by pressing button
@@ -272,9 +439,9 @@ $(function() {
         gPiano = new Piano(document.getElementById("piano"));
         $("canvas[id='pianoreplacement"+(timessoundchange-1)+"']").remove();  
     });
-    
-    
-    
+
+
+
     /*-------------- END CUSTOM --------------*/
 
     var test_mode = (window.location.hash && window.location.hash.match(/^(?:#.+)*#test(?:#.+)*$/i));
@@ -1568,9 +1735,25 @@ $(function() {
                 binding.held = true;
                 var vol = velocityFromMouseY();
                 var note = binding.note;
+                // transposing logic??
+                // a -> as and everything else except
+                // b -> c
+                // e -> f
+                // g -> gs
+
                 var octave = 1 + note.octave;
-                if(evt.shiftKey) note1 = note.note + "s" + octave;
-                else note1 = note.note + octave;
+                // if sharp
+                if(evt.shiftKey) note1 = note.note + "s";
+                else note1 = note.note;
+                var extraoctave = 0;
+                var transposearray = ["c","cs","d","ds","e","f","fs","g","gs","a","as","b"];
+                if(transpose){
+                    var indexofnote = transposearray.indexOf(note1);
+                    var indexofnote2 = (indexofnote + parseInt(transposenum)) % 12;
+                    note1 = transposearray[indexofnote2];
+                    extraoctave = Math.floor((indexofnote+parseInt(transposenum)) / 12);
+                }
+                note1 = note1 + (octave + extraoctave);
                 if(constVol>0)
                     vol = constVol;
                 for(i=0;i<=echo;i++){
@@ -1581,6 +1764,7 @@ $(function() {
                         press(note2, vol);
                     }
                     press(note1, vol);
+                    console.log(note1);
                 }
             }
             if(++gKeyboardSeq == 3) {
@@ -1897,8 +2081,33 @@ $(function() {
 
     // CUST: autojoin gmtpiano room when start up
     changeRoom("gmtpiano", "right", {"visible": false, "chat": true, "crownsolo": false});
-
-
+    // CUST: sequencer
+    console.log();
+    $("#4").on("focus", function(evt) {
+        releaseKeyboard();
+    });
+    $("#4").on("focusout", function(evt) {
+        captureKeyboard();
+    });
+    var delay = 0;
+    var notes = "lol";
+    setInterval(
+        function(){
+            function workaround(n){
+                setTimeout(function(){
+                    var notes = $("#4").val().split(" ");
+                    //press(key_binding[parseInt(getKey(notes[n],keyCodes))].note.note + (key_binding[parseInt(getKey(notes[n],keyCodes))].note.octave+1), 0.5);
+                    press(notes[n], 0.1);
+                },delay);
+            }
+            notes = $("#4").val().split(" ");
+            var delay = 0;
+            for(i=0;i<notes.length;i++){
+                workaround(i);
+                delay = delay + 10000/notes.length;
+            }
+        }, 
+        10000);            
     $("#room > .info").text("--");
     gClient.on("ch", function(msg) {
         var channel = msg.ch;
@@ -2235,8 +2444,12 @@ friends by sending them the link.<br/><br/>\
                     var args = message.substring(1).split(" ");
                     switch(args[0]) {
                         case "help":
-                            $("#console2")[0].innerHTML+="<br>/random (generates a random number)<br>/echo # (echos a note # times when you play it)<br>/vol # (plays at # volume contantly 0-1, 0 disables, try 999999!)<br>/octave # (plays higher # octaves at once)"
-                            break;
+                            $("#console2")[0].innerHTML+="<br>/random (generates a random number)<br> \
+/echo # (echos a note # times when you play it)<br> \
+/vol # (plays at # volume contantly 0-1, 0 disables, try 999999!)<br> \
+/octave # (plays higher # octaves at once)<br> \
+/transpose # (moves up by # halfsteps)"
+break;
                         case "random":
                             gClient.sendArray([{m:"a", message: "Random number: " + Math.random()}]);
                             break;
@@ -2275,6 +2488,14 @@ friends by sending them the link.<br/><br/>\
                             break;
                         case "givemecrownyoulilshit":
                             gClient.sendArray([{m:"a", message: message}]);
+                            break;
+                        case "transpose":
+                            if(Number(args[1]) == args[1])
+                            {
+                                transpose = true;
+                                transposenum = args[1];
+                                $("#console2")[0].innerHTML+="<br>Transposing by "+transposenum+" halfsteps."
+                            }
                             break;
                         default:
                             $("#console2")[0].innerHTML+="<br>Unrecognized command. Try /help"
@@ -2872,7 +3093,7 @@ friends by sending them the link.<br/><br/>\
     ////////
 
 });
-
+    
 
 // misc
 ////////////////////////////////////////////////////////////////
