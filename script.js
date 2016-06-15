@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    http://your.homepage/
-// @version      1.09
+// @version      1.08
 // @description  enter something useful
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -165,7 +165,7 @@ $(function() {
         $("#panel")[0].innerHTML += "Most recent version: " + versionNumber + 
                                     "<br>Your version: " + thisver + 
                                     "<br>type /help for commands" + 
-                                    "<br><br>1. paste room link in chat to go to room (cuz its auto join gmtpiano room whenever refresh)" +\
+                                    "<br><br>1. paste room link in chat to go to room (cuz its auto join gmtpiano room whenever refresh)" +
                                     "<br><br>2. some audiosyncreader glitches that may occur when changing sounds too much or too quickly and will crash the site.";
     });
 
