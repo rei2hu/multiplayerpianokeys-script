@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    https://github.com/rei2hu/MultiplayerPianoKeysScript
-// @version      3.3
+// @version      3.4
 // @description  MPP redefined xd
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -152,7 +152,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
     modal.innerHTML = "<p></p><div style=\"display:inline;\" id=\"keyguide\" class=\"ugly-button drop-crown\">Toggle Key Guide</div> &nbsp \
 <div style=\"display:inline\" id=\"updatenotes\" class=\"ugly-button drop-crown\">Update Notes</div><p></p> \
 <p><label>Increase Octave: <br><label id=\"octnum\">0</label> &nbsp &nbsp <label><input id=\"oct\" type=\"range\" step=1 max=3 min=-3 value=0></input></label></p>\n \
-<p><label>Additional Octave(s): <br><label id=\"addoctnum\">0</label> &nbsp &nbsp <label><input id=\"adoct\" type=\"range\" step=1 max=6 min=0 value=0></input></label></p>\n \
+<p><label>Additional Octave(s): <br><label id=\"addoctnum\">0</label> &nbsp &nbsp <label><input id=\"adoct\" type=\"range\" step=1 max=6 min=-6 value=0></input></label></p>\n \
 <p><label>Transpose (halfsteps): <br><label id=\"transnum\">0</label> &nbsp &nbsp <label><input id=\"trans\" type=\"range\" step=1 max=11 min=-11 value=0></input></label></p>\n \
 <p><label>Sound Type: \
 <select id='sounds'>\
@@ -1811,8 +1811,10 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
                 var carry_over_octave = Math.floor(new_note_index / 12); // if theres overlap then increase the octave
                 octave += carry_over_octave + c_o_octave_mod;
 
-                for(var add_oct = 0; add_oct <= additional_octaves; add_oct++) {
-                    var note1 = note + (octave + add_oct);
+                var add_oct_mult = 1;
+                if(additional_octaves < 0) add_oct_mult = -1;
+                for(var add_oct = 0; add_oct <= Math.abs(additional_octaves); add_oct++) {
+                    var note1 = note + (octave + add_oct * add_oct_mult);
                     var vol = velocityFromMouseY();
                     press(note1, vol);
                 }
