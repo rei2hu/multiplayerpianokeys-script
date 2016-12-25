@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    https://github.com/rei2hu/MultiplayerPianoKeysScript
-// @version      3.0
+// @version      3.1
 // @description  MPP redefined xd
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -20,6 +20,15 @@
 
 $(function() {
 
+    // [MODIFIED]
+    // update information
+    /////////////////////
+    
+    var updatenotes = "Updated for the 12/24 version of the MPP script \n Custom sounds, change octave features \n By default no ads ;) \n Sorry for using alert() for this";
+        
+    // [ENDMODIFIED]
+    ////////////////
+    
 	var test_mode = (window.location.hash && window.location.hash.match(/^(?:#.+)*#test(?:#.+)*$/i));
 
 	var gSeeOwnCursor = (window.location.hash && window.location.hash.match(/^(?:#.+)*#seeowncursor(?:#.+)*$/i));
@@ -72,10 +81,6 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
     // [ENDMODIFIED]
     ////////////////
     
-    // [MODIFIED]
-    // Custom Sounds
-    ////////////////
-
 	var gSoundPath = "/mp3/";
 	var gSoundExt = ".wav.mp3";
 	
@@ -122,7 +127,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
 	var TIMING_TARGET = 1000;
 
     // [MODIFIED]
-    // menu for choosing all 'new' settings
+    // button to open menu for choosing all 'new' settings
     ///////////////////////////////////////
     
     var button = document.createElement('div');
@@ -141,16 +146,19 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
     var modal = document.createElement('div');
     modal.setAttribute("id", "custom-settings"); // steal room settings layout
     modal.setAttribute("class", "dialog");
+    modal.setAttribute("style", "height:700px;margin-top:-350px");
     function updateval() {
         console.log("asd");
     }
-    modal.innerHTML = "<p>Octaves Higher: <label id=\"octnum\">0</label> &nbsp &nbsp <label><input id=\"oct\" type=\"range\" step=1 max=3 min=-3 value=0></input></label></p>\n \
-        <p>Sound Type (broken): \
+    modal.innerHTML = "<p></p><div style=\"display:inline;\" id=\"keyguide\" class=\"ugly-button drop-crown\">Toggle Key Guide</div> &nbsp \
+<div style=\"display:inline\" id=\"updatenotes\" class=\"ugly-button drop-crown\">Update Notes</div><p></p> \
+<p><label>Octaves Higher: <label id=\"octnum\">0</label> &nbsp &nbsp <label><input id=\"oct\" type=\"range\" step=1 max=3 min=-3 value=0></input></label></p>\n \
+<p><label>Sound Type: \
 <select id='sounds'>\
 <option value='0'>Kawai</option>\
 <option value='1'>Maestro</option>\
 <option value='2'>Steinway</option>\
-<option value='3'>Default</option>\
+<option value='3' selected=\"selected\">Default</option>\
 <option value='4'>Great and Soft</option>\
 <option value='5'>Loud and Proud</option>\
 <option value='6'>New Piano</option>\
@@ -158,8 +166,8 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
 <option value='8'>Harpischord</option>\
 <option value='9'>Clear</option>\
 <option value='10'>Klaver</option>\
-</select>\
-        <div id=\"keyguide\" class=\"ugly-button drop-crown\">Toggle Key Guide</div>\n \
+</select></label></p>\
+<p><label>Other:</label></p>\
         <button class=\"submit\">EXIT</button>";
     $("#modal #modals")[0].appendChild(modal);
     
@@ -199,11 +207,14 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
                              ".wav",
                              ".wav",
                              ".wav"];
-            var pianoType = urllocations[soundType];
-            var typearoo = fileTypes[soundType];
-            gPiano = new Piano(document.getElementById("piano"));
+            gSoundPath = urllocations[soundType];
+            gSoundExt = fileTypes[soundType];
             timessoundchange++;
+            gPiano = new Piano(document.getElementById("piano"));
             $("canvas[id='pianoreplacement"+(timessoundchange-1)+"']").remove();
+        });
+        $("#custom-settings #updatenotes").click(function() {
+            alert(updatenotes);
         });
         $("#custom-settings #keyguide").click(function() {
             if(!keyguide) {
@@ -777,7 +788,15 @@ Rect.prototype.contains = function(x, y) {
 	CanvasRenderer.prototype.init = function(piano) {
 		this.canvas = document.createElement("canvas");
 		this.ctx = this.canvas.getContext("2d");
+        
+        // [MODIFIED]
+        // for loading new sounds
+        /////////////////////////
+        
         this.canvas.id = "pianoreplacement"+timessoundchange;
+        
+        // [ENDMODIFIED]
+        ////////////////
 		piano.rootElement.appendChild(this.canvas);
 
 		Renderer.prototype.init.call(this, piano); // calls resize()
