@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    https://github.com/rei2hu/MultiplayerPianoKeysScript
-// @version      3.4
+// @version      3.5
 // @description  MPP redefined xd
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -146,9 +146,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
     var modal = document.createElement('div');
     modal.setAttribute("id", "custom-settings"); // steal room settings layout
     modal.setAttribute("class", "dialog");
-    function updateval() {
-        console.log("asd");
-    }
+
     modal.innerHTML = "<p></p><div style=\"display:inline;\" id=\"keyguide\" class=\"ugly-button drop-crown\">Toggle Key Guide</div> &nbsp \
 <div style=\"display:inline\" id=\"updatenotes\" class=\"ugly-button drop-crown\">Update Notes</div><p></p> \
 <p><label>Increase Octave: <br><label id=\"octnum\">0</label> &nbsp &nbsp <label><input id=\"oct\" type=\"range\" step=1 max=3 min=-3 value=0></input></label></p>\n \
@@ -220,6 +218,11 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
             gSoundExt = fileTypes[soundType];
             timessoundchange++;
             gPiano = new Piano(document.getElementById("piano"));
+            audio = gPiano.audio;
+            context = gPiano.audio.context;
+            synth_gain = context.createGain();
+            synth_gain.gain.value = 0.05;
+            synth_gain.connect(audio.synthGain);
             $("canvas[id='pianoreplacement"+(timessoundchange-1)+"']").remove();
         });
         $("#custom-settings #updatenotes").click(function() {
