@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    https://github.com/rei2hu/MultiplayerPianoKeysScript
-// @version      3.2
+// @version      3.3
 // @description  MPP redefined xd
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -24,7 +24,7 @@ $(function() {
     // update information
     /////////////////////
 
-    var updatenotes = "Updated for the 12/24 version of the MPP script \n Custom sounds, change octave features \n By default no ads ;) \n Sorry for using alert() for this";
+    var updatenotes = "Updated for the 12/24 version of the MPP script \n Custom sounds, change octave features \n Transpose features, multiple octaves features \n By default no ads ;) \n Sorry for using alert() for this";
 
     // [ENDMODIFIED]
     ////////////////
@@ -153,6 +153,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
 <div style=\"display:inline\" id=\"updatenotes\" class=\"ugly-button drop-crown\">Update Notes</div><p></p> \
 <p><label>Increase Octave: <br><label id=\"octnum\">0</label> &nbsp &nbsp <label><input id=\"oct\" type=\"range\" step=1 max=3 min=-3 value=0></input></label></p>\n \
 <p><label>Additional Octave(s): <br><label id=\"addoctnum\">0</label> &nbsp &nbsp <label><input id=\"adoct\" type=\"range\" step=1 max=6 min=0 value=0></input></label></p>\n \
+<p><label>Transpose (halfsteps): <br><label id=\"transnum\">0</label> &nbsp &nbsp <label><input id=\"trans\" type=\"range\" step=1 max=11 min=-11 value=0></input></label></p>\n \
 <p><label>Sound Type: \
 <select id='sounds'>\
 <option value='0'>Kawai</option>\
@@ -186,6 +187,10 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
         $("#custom-settings #adoct").change(function() {
             $("#addoctnum")[0].innerHTML = this.value;
             additional_octaves = parseInt(this.value);
+        });
+        $("#custom-settings #trans").change(function() {
+            $("#transnum")[0].innerHTML = this.value;
+            transpose_halfsteps = parseInt(this.value);
         });
         $("#custom-settings #sounds").change(function() {
             var soundType = this.value;
@@ -1776,7 +1781,9 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
     // new key handling logic
     /////////////////////////
 
-    var additional_octaves = 0;
+    var additional_octaves = 0; // number of additional octaves to play at same time
+    var transpose_halfsteps = 0; // number of half steps to increase note by
+    var transpose_array = ["c","cs","d","ds","e","f","fs","g","gs","a","as","b"];
 
     function handleKeyDown(evt) {
         //console.log(evt);
@@ -1786,15 +1793,27 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
             if(!binding.held) {
                 binding.held = true;
 
-                var note = binding.note;
-                var octave = 1 + note.octave + transpose_octave;
-                var note1;
+                var note = binding.note; // the note ie c cs d ds
+                var octave = 1 + note.octave + transpose_octave; // the octave (a number)
+
                 if(evt.shiftKey) note = note.note + "s";
                 else note = note.note;
+
+                // if the transpose halfsteps is negative and greater than the index of the note then treat as going positive by 12 plus the negative but octave goes down once
+                // because of adding 12
+                var c_o_octave_mod = 0;
+                var new_note_index = (transpose_array.indexOf(note) + transpose_halfsteps)
+                if (transpose_array.indexOf(note) < -transpose_halfsteps) {
+                    c_o_octave_mod = -1;
+                    new_note_index = (transpose_array.indexOf(note) + transpose_halfsteps + 12)
+                }
+                note = transpose_array[new_note_index % 12];
+                var carry_over_octave = Math.floor(new_note_index / 12); // if theres overlap then increase the octave
+                octave += carry_over_octave + c_o_octave_mod;
+
                 for(var add_oct = 0; add_oct <= additional_octaves; add_oct++) {
-                    note1 = note + (octave + add_oct);
+                    var note1 = note + (octave + add_oct);
                     var vol = velocityFromMouseY();
-                    console.log(note1);
                     press(note1, vol);
                 }
             }
