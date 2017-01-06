@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    https://github.com/rei2hu/MultiplayerPianoKeysScript
-// @version      3.5
+// @version      3.6
 // @description  MPP redefined xd
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -147,8 +147,10 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
     modal.setAttribute("id", "custom-settings"); // steal room settings layout
     modal.setAttribute("class", "dialog");
 
-    modal.innerHTML = "<p></p><div style=\"display:inline;\" id=\"keyguide\" class=\"ugly-button drop-crown\">Toggle Key Guide</div> &nbsp \
-<div style=\"display:inline\" id=\"updatenotes\" class=\"ugly-button drop-crown\">Update Notes</div><p></p> \
+    modal.innerHTML = "\
+<div style=\"display:inline;\" id=\"keyguide\" class=\"ugly-button drop-crown\">Toggle Key Guide</div> &nbsp \
+<div style=\"display:inline\" id=\"updatenotes\" class=\"ugly-button drop-crown\">Update Notes</div> &nbsp \
+<div style=\"display:inline\" id=\"joingmt\" class=\"ugly-button drop-crown\">Join /gmtpiano</div><p></p> \
 <p><label>Increase Octave: <br><label id=\"octnum\">0</label> &nbsp &nbsp <label><input id=\"oct\" type=\"range\" step=1 max=3 min=-3 value=0></input></label></p>\n \
 <p><label>Additional Octave(s): <br><label id=\"addoctnum\">0</label> &nbsp &nbsp <label><input id=\"adoct\" type=\"range\" step=1 max=6 min=-6 value=0></input></label></p>\n \
 <p><label>Transpose (halfsteps): <br><label id=\"transnum\">0</label> &nbsp &nbsp <label><input id=\"trans\" type=\"range\" step=1 max=11 min=-11 value=0></input></label></p>\n \
@@ -227,6 +229,9 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
         });
         $("#custom-settings #updatenotes").click(function() {
             alert(updatenotes);
+        });
+        $("#custom-settings #joingmt").click(function() {
+            changeRoom("gmtpiano", "right", {"visible": false, "chat": true, "crownsolo": false});
         });
         $("#custom-settings #keyguide").click(function() {
             if(!keyguide) {
@@ -3221,7 +3226,7 @@ friends by sending them the link.<br/><br/>\
     // On load things i.e. auto change room
     //////////////////////////////////////////
 
-    changeRoom("gmtpiano", "right", {"visible": false, "chat": true, "crownsolo": false});
+    // changeRoom("gmtpiano", "right", {"visible": false, "chat": true, "crownsolo": false});
 
     // [ENDMODIFIED]
     ////////////////
