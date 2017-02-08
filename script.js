@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    https://github.com/rei2hu/MultiplayerPianoKeysScript
-// @version      3.6
+// @version      3.7
 // @description  MPP redefined xd
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -169,14 +169,22 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
 <option value='10'>Klaver</option>\
 </select></label></p>\
 <p><label>Other:</label></p>\
-<button class=\"submit\">EXIT</button>";
+<button class=\"submit\">EXIT</button>\
+<input type=\"checkbox\" id=\"tgjoin\" checked=\"true\">Join GMT automatically";
     $("#modal #modals")[0].appendChild(modal);
-
     var timessoundchange = 0;
-
     // button event listeners
     (function() {
         var keyguide = false;
+        $("#tgjoin").click(function(evt) {
+            let chkbox = evt.srcElement;
+            if (chkbox.checked == true) {
+                localStorage.setItem('joingmt', true);
+            } else {
+                localStorage.setItem('joingmt', false);
+            }
+            console.log(localStorage.getItem('joingmt'));
+        })
         $("#custom_button").click(function(evt) {
             openModal("#custom-settings");
         });
@@ -3226,7 +3234,8 @@ friends by sending them the link.<br/><br/>\
     // On load things i.e. auto change room
     //////////////////////////////////////////
 
-    // changeRoom("gmtpiano", "right", {"visible": false, "chat": true, "crownsolo": false});
+    if(localStorage.getItem('joingmt'))
+        changeRoom("gmtpiano", "right", {"visible": false, "chat": true, "crownsolo": false});
 
     // [ENDMODIFIED]
     ////////////////
