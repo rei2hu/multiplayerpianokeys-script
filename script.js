@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    https://github.com/rei2hu/MultiplayerPianoKeysScript
-// @version      3.7
+// @version      3.8
 // @description  MPP redefined xd
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -74,9 +74,9 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
     // custom picture
     /////////////////
 
-    document.getElementById("more-button").style.background = "url(http://en.touhouwiki.net/images/e/e0/076BAiJRReimu.jpg)";  
-    document.getElementById("more-button").style.backgroundSize ="auto 100%";
-    document.body.style.backgroundSize ="auto 100%";
+    //document.getElementById("more-button").style.background = "url(http://en.touhouwiki.net/images/e/e0/076BAiJRReimu.jpg)";  
+    //document.getElementById("more-button").style.backgroundSize ="auto 100%";
+    //document.body.style.backgroundSize ="auto 100%";
 
     // [ENDMODIFIED]
     ////////////////
