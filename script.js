@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    https://github.com/rei2hu/MultiplayerPianoKeysScript
-// @version      3.8
+// @version      3.9
 // @description  MPP redefined xd
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -1815,6 +1815,9 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
                 if(evt.shiftKey) note = note.note + "s";
                 else note = note.note;
 
+                if (note === "bs") note = "c", octave++;
+                else if (note === "es")note = "f";
+
                 // if the transpose halfsteps is negative and greater than the index of the note then treat as going positive by 12 plus the negative but octave goes down once
                 // because of adding 12
                 var c_o_octave_mod = 0;
@@ -1832,6 +1835,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
                 for(var add_oct = 0; add_oct <= Math.abs(additional_octaves); add_oct++) {
                     var note1 = note + (octave + add_oct * add_oct_mult);
                     var vol = velocityFromMouseY();
+                    //console.log(note1);
                     press(note1, vol);
                 }
             }
