@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    https://github.com/rei2hu/MultiplayerPianoKeysScript
-// @version      4.0
+// @version      4.01
 // @description  MPP redefined xd
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -24,7 +24,9 @@ $(function() {
     // update information
     /////////////////////
 
-    var updatenotes = "Updated for the 12/24 version of the MPP script \n Custom sounds, change octave features \n Transpose features, multiple octaves features \n By default no ads ;) \n Sorry for using alert() for this";
+    var updatenotes = `aint no one got time for
+an update message.
+`;
 
     // [ENDMODIFIED]
     ////////////////
@@ -151,10 +153,11 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
 <div style=\"display:inline;\" id=\"keyguide\" class=\"ugly-button drop-crown\">Toggle Key Guide</div> &nbsp \
 <div style=\"display:inline\" id=\"transposer\" class=\"ugly-button drop-crown\">Note Transposer</div> &nbsp \
 <div style=\"display:inline\" id=\"joingmt\" class=\"ugly-button drop-crown\">Join /gmtpiano</div> &nbsp \
+<div style=\"display:inline\" id=\"party\" class=\"ugly-button drop-crown\">Party</div> <label style=\"font-size:10px\" id=\"ptstat\">false</label>&nbsp \
 <div style=\"display:inline\" id=\"updatenotes\" class=\"ugly-button drop-crown\">Update Notes</div> &nbsp \
-<p><label>Increase Octave: <br><label id=\"octnum\">0</label> &nbsp &nbsp <label><input id=\"oct\" type=\"range\" step=1 max=3 min=-3 value=0></input></label></p>\n \
-<p><label>Additional Octave(s): <br><label id=\"addoctnum\">0</label> &nbsp &nbsp <label><input id=\"adoct\" type=\"range\" step=1 max=6 min=-6 value=0></input></label></p>\n \
-<p><label>Transpose (halfsteps): <br><label id=\"transnum\">0</label> &nbsp &nbsp <label><input id=\"trans\" type=\"range\" step=1 max=11 min=-11 value=0></input></label></p>\n \
+<p><label>Increase Octave: <label id=\"octnum\">0</label> <br>&nbsp &nbsp <label><input id=\"oct\" type=\"range\" step=1 max=3 min=-3 value=0></input></label></p>\n \
+<p><label>Additional Octave(s): <label id=\"addoctnum\">0</label> <br>&nbsp &nbsp <label><input id=\"adoct\" type=\"range\" step=1 max=6 min=-6 value=0></input></label></p>\n \
+<p><label>Transpose (halfsteps): <label id=\"transnum\">0</label> <br>&nbsp &nbsp <label><input id=\"trans\" type=\"range\" step=1 max=11 min=-11 value=0></input></label></p>\n \
 <p><label>Sound Type: \
 <select id='sounds'>\
 <option value='0'>Kawai</option>\
@@ -182,8 +185,9 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
 <textarea id=\"tpnts\" style=\"width:99%; height:60%\"></textarea> \
 <div id=\"tphs\" style=\"font-size:15px\">Halfsteps:</div> \
 <div id=\"tpsbuts\"></div>";
-    $("#modal #modals")[0].appendChild(modal);
     var timessoundchange = 0;
+    var party = false;
+    var partyint;
     // button event listeners
     (function() {
         var keyguide = false;
@@ -202,6 +206,20 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
         $("#custom-settings #oct").change(function() {
             $("#octnum")[0].innerHTML = this.value;
             transpose_octave = parseInt(this.value);
+        });
+        $("#custom-settings #party").click(function() {
+            // setColor("#3b5054");
+            party = !party;
+            $("#ptstat")[0].innerHTML = party;
+            if (party) {
+                partyint = setInterval(() => {
+                    let color = "#" + (Math.random() * 0xffffff).toString(16).slice(0, 6);
+                    gClient.sendArray([{m: "chset", set: {color}}]);
+                }, 1000);
+            } else {
+                clearInterval(partyint);
+                setTimeout(() => gClient.sendArray([{m: "chset", set: {color: "#000000"}}]), 2000);
+            }
         });
         $("#custom-settings #transposer").click(function() {
             openModal("#transposemodal");
@@ -234,7 +252,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
                         }
                         thing += notes[i];
                     }
-                    trans += ts.includes(thing) && ts.indexOf(thing) + halfstep > -1 && ts.indexOf(thing) + halfstep < ts.length? ts[ts.indexOf(thing) + halfstep] : thing;
+                    trans += ts.includes(thing) && ts.indexOf(thing) + halfstep - 7 > -1 && ts.indexOf(thing) + halfstep - 7 < ts.length? ts[ts.indexOf(thing) + halfstep - 7] : thing;
                 }
                 diff[halfstep] = numDif(trans);
                 song[halfstep] = trans;
@@ -242,7 +260,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
             }
             // console.log(diff);
             const min = Math.min.apply(null, diff)
-            $("#tphs")[0].innerHTML = "Best Pick => Halfsteps: " + (diff.indexOf(min)) + ", Sharps (est): " + min;
+            $("#tphs")[0].innerHTML = "Best Pick => Halfsteps: " + (diff.indexOf(min) - 7) + ", Sharps (est): " + min;
             $("#tpnts").val(song[diff.indexOf(min)]);
             $("#tpsbuts")[0].innerHTML = "";
             for (let i = 0; i < song.length; i++) {
@@ -250,7 +268,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
                 butt.setAttribute("style", "display:inline;padding-left:5px;padding-right:5px;margin-right:5px");
                 butt.setAttribute("id", "nts" + i);
                 butt.setAttribute("class", "ugly-button drop-crown");
-                butt.innerHTML = i;
+                butt.innerHTML = i - 7;
                 butt.onclick = function() {
                     $("#tpnts").val(song[i]);
                 }
@@ -1733,7 +1751,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
             }, step_ms);
         }
 
-        setColor("#3b5054");
+        setColor("#000000");
 
         gClient.on("ch", function(ch) {
             if(ch.ch.settings) {
