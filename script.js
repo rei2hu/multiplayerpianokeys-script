@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    https://github.com/rei2hu/MultiplayerPianoKeysScript
-// @version      4.01
+// @version      4.02
 // @description  MPP redefined xd
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -26,6 +26,8 @@ $(function() {
 
     var updatenotes = `aint no one got time for
 an update message.
+
+ooops XD
 `;
 
     // [ENDMODIFIED]
@@ -185,6 +187,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
 <textarea id=\"tpnts\" style=\"width:99%; height:60%\"></textarea> \
 <div id=\"tphs\" style=\"font-size:15px\">Halfsteps:</div> \
 <div id=\"tpsbuts\"></div>";
+    $("#modal #modals")[0].appendChild(modal);
     var timessoundchange = 0;
     var party = false;
     var partyint;
