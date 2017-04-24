@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    https://github.com/rei2hu/MultiplayerPianoKeysScript
-// @version      3.9
+// @version      4.0
 // @description  MPP redefined xd
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -149,8 +149,9 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
 
     modal.innerHTML = "\
 <div style=\"display:inline;\" id=\"keyguide\" class=\"ugly-button drop-crown\">Toggle Key Guide</div> &nbsp \
+<div style=\"display:inline\" id=\"transposer\" class=\"ugly-button drop-crown\">Note Transposer</div> &nbsp \
+<div style=\"display:inline\" id=\"joingmt\" class=\"ugly-button drop-crown\">Join /gmtpiano</div> &nbsp \
 <div style=\"display:inline\" id=\"updatenotes\" class=\"ugly-button drop-crown\">Update Notes</div> &nbsp \
-<div style=\"display:inline\" id=\"joingmt\" class=\"ugly-button drop-crown\">Join /gmtpiano</div><p></p> \
 <p><label>Increase Octave: <br><label id=\"octnum\">0</label> &nbsp &nbsp <label><input id=\"oct\" type=\"range\" step=1 max=3 min=-3 value=0></input></label></p>\n \
 <p><label>Additional Octave(s): <br><label id=\"addoctnum\">0</label> &nbsp &nbsp <label><input id=\"adoct\" type=\"range\" step=1 max=6 min=-6 value=0></input></label></p>\n \
 <p><label>Transpose (halfsteps): <br><label id=\"transnum\">0</label> &nbsp &nbsp <label><input id=\"trans\" type=\"range\" step=1 max=11 min=-11 value=0></input></label></p>\n \
@@ -172,6 +173,16 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
 <button class=\"submit\">EXIT</button>\
 <input type=\"checkbox\" id=\"tgjoin\" checked=\"true\">Join GMT automatically";
     $("#modal #modals")[0].appendChild(modal);
+    modal = document.createElement('div');
+    modal.setAttribute("id", "transposemodal");
+    modal.setAttribute("class", "dialog");
+    modal.innerHTML = "\
+<div style=\"display:inline;\" id=\"optrans\" class=\"ugly-button drop-crown\">Find Optimal Transpose</div> &nbsp \
+<br><br> \
+<textarea id=\"tpnts\" style=\"width:99%; height:60%\"></textarea> \
+<div id=\"tphs\" style=\"font-size:15px\">Halfsteps:</div> \
+<div id=\"tpsbuts\"></div>";
+    $("#modal #modals")[0].appendChild(modal);
     var timessoundchange = 0;
     // button event listeners
     (function() {
@@ -191,6 +202,61 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
         $("#custom-settings #oct").change(function() {
             $("#octnum")[0].innerHTML = this.value;
             transpose_octave = parseInt(this.value);
+        });
+        $("#custom-settings #transposer").click(function() {
+            openModal("#transposemodal");
+        });
+        $("#transposemodal #optrans").click(function() {
+            let notes = $("#tpnts").val();
+            function numDif(str1) {
+                let str2 = str1.toLowerCase();
+                let count = 0;
+                for (let i = 0; i < str1.length; i++) {
+                    if (str1[i] !== str2[i]) count++;
+                }
+                return count;
+            }
+            const ts = ["{lft}","{LFT}","{rght}","{f1}","{F1}","{f2}","{F2}","{f3}","{f4}","{F4}","{f5}",
+                        "{F5}","{f6}","{F6}","{f7}","1","!","2","@","3","4","$","5","%","6","^","7","8",
+                        "*","9","(","0","q","Q","w","W","e","E","r","t","T","y","Y","u","i","I","o","O",
+                        "p","P","a","s","S","d","D","f","g","G","h","H","j","J","k","l","L","z","Z","x",
+                        "c","C","v","V","b","B","n","m","M","{ins}","{INS}","{hom}","{pup}","{PUP}","{del}",
+                        "{DEL}","{end}","{END}","{pdn}","{upa}"]
+            let song = [];
+            let diff = [];
+            for (halfstep = 0; halfstep < 13; halfstep++) {
+                trans = "";
+                for (let i = 0; i < notes.length; i++) {
+                    thing = notes[i];
+                    if (notes[i] === "{") {
+                        while (notes[++i] !== "}") {
+                            thing += notes[i];
+                        }
+                        thing += notes[i];
+                    }
+                    trans += ts.includes(thing) && ts.indexOf(thing) + halfstep > -1 && ts.indexOf(thing) + halfstep < ts.length? ts[ts.indexOf(thing) + halfstep] : thing;
+                }
+                diff[halfstep] = numDif(trans);
+                song[halfstep] = trans;
+                // console.log(trans);
+            }
+            // console.log(diff);
+            const min = Math.min.apply(null, diff)
+            $("#tphs")[0].innerHTML = "Best Pick => Halfsteps: " + (diff.indexOf(min)) + ", Sharps (est): " + min;
+            $("#tpnts").val(song[diff.indexOf(min)]);
+            $("#tpsbuts")[0].innerHTML = "";
+            for (let i = 0; i < song.length; i++) {
+                const butt = document.createElement("div");
+                butt.setAttribute("style", "display:inline;padding-left:5px;padding-right:5px;margin-right:5px");
+                butt.setAttribute("id", "nts" + i);
+                butt.setAttribute("class", "ugly-button drop-crown");
+                butt.innerHTML = i;
+                butt.onclick = function() {
+                    $("#tpnts").val(song[i]);
+                }
+                // style=\"display:inline;\" id=\"keyguide\" class=\"ugly-button drop-crown\"
+                $("#tpsbuts")[0].appendChild(butt);
+            }
         });
         $("#custom-settings #adoct").change(function() {
             $("#addoctnum")[0].innerHTML = this.value;
@@ -278,7 +344,8 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
     style.type = 'text/css';
     // for each button top is 4 or 32 and left increases by 120
     style.innerHTML = "#custom_button { position: absolute; left: 660px; top: 4px; } \
-#custom-settings { height:700px; margin-top:-350px; background-color: black;}";
+#custom-settings { height:700px; margin-top:-350px; background-color: black;} \
+#transposemodal { height:700px; margin-top:-350px; background-color: black;}";
     document.getElementsByTagName('head')[0].appendChild(style);
 
     // [ENDMODIFIED]
