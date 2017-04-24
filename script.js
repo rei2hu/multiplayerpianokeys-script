@@ -323,7 +323,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
             }
             let song = [];
             let diff = [];
-            for (halfstep = 0; halfstep < 13; halfstep++) {
+            for (halfstep = 0; halfstep < 28; halfstep++) {
                 trans = "";
                 for (let i = 0; i < notes.length; i++) {
                     thing = notes[i];
@@ -333,7 +333,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
                         }
                         thing += notes[i];
                     }
-                    trans += ts.includes(thing) && ts.indexOf(thing) + halfstep - 7 > -1 && ts.indexOf(thing) + halfstep - 7 < ts.length? ts[ts.indexOf(thing) + halfstep - 7] : thing;
+                    trans += ts.includes(thing) && ts.indexOf(thing) + halfstep - 14 > -1 && ts.indexOf(thing) + halfstep - 14 < ts.length? ts[ts.indexOf(thing) + halfstep - 14] : thing;
                 }
                 diff[halfstep] = numDif(trans);
                 song[halfstep] = trans;
@@ -341,7 +341,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
             }
             // console.log(diff);
             const min = Math.min.apply(null, diff)
-            $("#tphs")[0].innerHTML = "Best Pick => Halfsteps: " + (diff.indexOf(min) - 7) + ", Sharps (est): " + min;
+            $("#tphs")[0].innerHTML = "Best Pick => Halfsteps: " + (diff.indexOf(min) - 14) + "(+/-13), Sharps (est): " + min;
             $("#tpnts").val(song[diff.indexOf(min)]);
             $("#notes").val(song[diff.indexOf(min)]);
             lines = $("#notes").val().split("\n").map(l => l.replace(/{.*?}|\/|[ |\-|<|>|\[|\]]/g, "").length);
@@ -354,8 +354,9 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
                 butt.setAttribute("style", "display:inline;padding-left:5px;padding-right:5px;margin-right:5px");
                 butt.setAttribute("id", "nts" + i);
                 butt.setAttribute("class", "ugly-button drop-crown");
-                butt.innerHTML = i - 7;
+                butt.innerHTML = i - 14;
                 butt.onclick = function() {
+                    console.log(i);
                     $("#tpnts").val(song[i]);
                     $("#notes").val(song[i]);
                     lines = $("#notes").val().split("\n").map(l => l.replace(/{.*?}|\/|[ |\-|<|>|\[|\]]/g, "").length);
@@ -364,6 +365,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
                     tot  = -1;
                 }
                 // style=\"display:inline;\" id=\"keyguide\" class=\"ugly-button drop-crown\"
+                if ((i - 14) % 7 === 0 && i !== 0) $("#tpsbuts")[0].appendChild(document.createElement("div"));
                 $("#tpsbuts")[0].appendChild(butt);
             }
         });
