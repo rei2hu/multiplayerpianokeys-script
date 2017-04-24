@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    https://github.com/rei2hu/MultiplayerPianoKeysScript
-// @version      4.02
+// @version      4.04
 // @description  MPP redefined xd
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -24,10 +24,12 @@ $(function() {
     // update information
     /////////////////////
 
-    var updatenotes = `aint no one got time for
-an update message.
-
-ooops XD
+    var updatenotes = `
+added a STAND wOw!!!
+is AUTO SCROLL
+is AUTO HIGHLIGHT
+is BUGGY
+:^)
 `;
 
     // [ENDMODIFIED]
@@ -156,6 +158,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
 <div style=\"display:inline\" id=\"transposer\" class=\"ugly-button drop-crown\">Note Transposer</div> &nbsp \
 <div style=\"display:inline\" id=\"joingmt\" class=\"ugly-button drop-crown\">Join /gmtpiano</div> &nbsp \
 <div style=\"display:inline\" id=\"party\" class=\"ugly-button drop-crown\">Party</div> <label style=\"font-size:10px\" id=\"ptstat\">false</label>&nbsp \
+<div style=\"display:inline\" id=\"sheetstand\" class=\"ugly-button drop-crown\">Stand</div> <label style=\"font-size:10px\" id=\"sheetstandstat\">false</label>&nbsp \
 <div style=\"display:inline\" id=\"updatenotes\" class=\"ugly-button drop-crown\">Update Notes</div> &nbsp \
 <p><label>Increase Octave: <label id=\"octnum\">0</label> <br>&nbsp &nbsp <label><input id=\"oct\" type=\"range\" step=1 max=3 min=-3 value=0></input></label></p>\n \
 <p><label>Additional Octave(s): <label id=\"addoctnum\">0</label> <br>&nbsp &nbsp <label><input id=\"adoct\" type=\"range\" step=1 max=6 min=-6 value=0></input></label></p>\n \
@@ -188,12 +191,79 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
 <div id=\"tphs\" style=\"font-size:15px\">Halfsteps:</div> \
 <div id=\"tpsbuts\"></div>";
     $("#modal #modals")[0].appendChild(modal);
+    modal = document.createElement("div");
+    modal.setAttribute("id", "stand");
+    modal.setAttribute("style", "font-size:10px;display:none;position:absolute;left:50%;top:50%;width:600px;height:200px;z-index:2;margin:-300px 0 0 -300px;background:white;color:black;padding:10px 10px 10px 10px");
+    modal.innerHTML = "<input id=\"linenum\"></input><input id=\"char\"></input><button id=\"resetnotes\">Reset</button><input type=\"file\" id=\"fileInput\">focus on window for highlighting<textarea id=\"notes\" style=\"line-height:20px;width:99%; height:70%\"></textarea>"
+    document.body.appendChild(modal);
     var timessoundchange = 0;
-    var party = false;
-    var partyint;
     // button event listeners
     (function() {
+        const ts = ["{lft}","{LFT}","{rght}","{f1}","{F1}","{f2}","{F2}","{f3}","{f4}","{F4}","{f5}",
+                    "{F5}","{f6}","{F6}","{f7}","1","!","2","@","3","4","$","5","%","6","^","7","8",
+                    "*","9","(","0","q","Q","w","W","e","E","r","t","T","y","Y","u","i","I","o","O",
+                    "p","P","a","s","S","d","D","f","g","G","h","H","j","J","k","l","L","z","Z","x",
+                    "c","C","v","V","b","B","n","m","M","{ins}","{INS}","{hom}","{pup}","{PUP}","{del}",
+                    "{DEL}","{end}","{END}","{pdn}","{upa}"]
+        var keysdown = [];
+        var line = 0;
+        var char = 0;
+        var tot  = -1;
+        var lines;
+        var lines2;
+        function keyStandScroll(evt) {
+            if (!key_binding[evt.keyCode] || keysdown[evt.keyCode]) return;
+            keysdown[evt.keyCode] = true;
+            let length = 1;
+            if (tot >= $("#notes").val().length) return;
+            while (!ts.includes(thing = $("#notes").val()[tot]) && tot < $("#notes").val().length) {
+                if (thing === "{") {
+                    while ($("#notes").val()[tot++] !== "}") {
+                        length++;
+                        thing += $("#notes").val()[tot];
+                    }
+                    break;
+                } else {
+                    tot++;
+                }
+            }
+            if (length > 1) tot -= length;
+            console.log(tot, length);
+            $("#notes")[0].setSelectionRange(tot, tot + length);
+            tot += length;
+            // work here
+            if (++char + 1> lines[line]) {
+                char = 0;
+                // line++;
+                $("#notes").scrollTop(20 * line++); // line-height:20px
+                // do second line
+            }
+            $("#linenum").val(line);
+            $("#char").val(char);
+            keysdown[evt.keyCode] = false;
+        }
+        var party = false;
+        var sheetstand = false;
         var keyguide = false;
+        var partyint;
+        $("#fileInput").change(function() {
+            let file = $(this)[0].files[0];
+            let read = new FileReader();
+            read.readAsBinaryString(file);
+
+            read.onloadend = function(){
+                $("#notes").val(read.result); 
+                lines = $("#notes").val().split("\n").map(l => l.replace(/{.*?}|\/|[\n|\r |\-|<|>|\[|\]]/g, "").length);
+                line = 0;
+                char = 0;
+                tot  = -1;
+            }
+        });
+        $("#resetnotes").click(function() {
+            line = 0;
+            char = 0;
+            tot  = -1;
+        });
         $("#tgjoin").click(function(evt) {
             let chkbox = evt.srcElement;
             if (chkbox.checked == true) {
@@ -201,10 +271,24 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
             } else {
                 localStorage.setItem('joingmt', false);
             }
-            console.log(localStorage.getItem('joingmt'));
         })
         $("#custom_button").click(function(evt) {
             openModal("#custom-settings");
+        });
+        $("#custom-settings #sheetstand").click(function() {
+            sheetstand = !sheetstand;
+            $("#sheetstandstat")[0].innerHTML = sheetstand;
+            if (sheetstand) {
+                $(document).on("keydown", keyStandScroll);
+                $("#stand").show();
+                lines = $("#notes").val().split("\n").map(l => l.replace(/{.*?}|\/|[\n|\r |\-|<|>|\[|\]]/g, "").length);
+                line = 0;
+                char = 0;
+                tot  = -1;
+            } else {
+                $(document).off("keydown", keyStandScroll);
+                $("#stand").hide();
+            }
         });
         $("#custom-settings #oct").change(function() {
             $("#octnum")[0].innerHTML = this.value;
@@ -237,12 +321,6 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
                 }
                 return count;
             }
-            const ts = ["{lft}","{LFT}","{rght}","{f1}","{F1}","{f2}","{F2}","{f3}","{f4}","{F4}","{f5}",
-                        "{F5}","{f6}","{F6}","{f7}","1","!","2","@","3","4","$","5","%","6","^","7","8",
-                        "*","9","(","0","q","Q","w","W","e","E","r","t","T","y","Y","u","i","I","o","O",
-                        "p","P","a","s","S","d","D","f","g","G","h","H","j","J","k","l","L","z","Z","x",
-                        "c","C","v","V","b","B","n","m","M","{ins}","{INS}","{hom}","{pup}","{PUP}","{del}",
-                        "{DEL}","{end}","{END}","{pdn}","{upa}"]
             let song = [];
             let diff = [];
             for (halfstep = 0; halfstep < 13; halfstep++) {
@@ -265,6 +343,11 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
             const min = Math.min.apply(null, diff)
             $("#tphs")[0].innerHTML = "Best Pick => Halfsteps: " + (diff.indexOf(min) - 7) + ", Sharps (est): " + min;
             $("#tpnts").val(song[diff.indexOf(min)]);
+            $("#notes").val(song[diff.indexOf(min)]);
+            lines = $("#notes").val().split("\n").map(l => l.replace(/{.*?}|\/|[ |\-|<|>|\[|\]]/g, "").length);
+            line = 0;
+            char = 0;
+            tot  = -1;
             $("#tpsbuts")[0].innerHTML = "";
             for (let i = 0; i < song.length; i++) {
                 const butt = document.createElement("div");
@@ -274,6 +357,11 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
                 butt.innerHTML = i - 7;
                 butt.onclick = function() {
                     $("#tpnts").val(song[i]);
+                    $("#notes").val(song[i]);
+                    lines = $("#notes").val().split("\n").map(l => l.replace(/{.*?}|\/|[ |\-|<|>|\[|\]]/g, "").length);
+                    line = 0;
+                    char = 0;
+                    tot  = -1;
                 }
                 // style=\"display:inline;\" id=\"keyguide\" class=\"ugly-button drop-crown\"
                 $("#tpsbuts")[0].appendChild(butt);
