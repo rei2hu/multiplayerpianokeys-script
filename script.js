@@ -341,7 +341,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
             }
             // console.log(diff);
             const min = Math.min.apply(null, diff)
-            $("#tphs")[0].innerHTML = "Best Pick => Halfsteps: " + (diff.indexOf(min) - 14) + "(+/-13), Sharps (est): " + min;
+            $("#tphs")[0].innerHTML = "Best Pick => Halfsteps: " + (diff.indexOf(min) - 14) + "(+/-12), Sharps (est): " + min;
             $("#tpnts").val(song[diff.indexOf(min)]);
             $("#notes").val(song[diff.indexOf(min)]);
             lines = $("#notes").val().split("\n").map(l => l.replace(/{.*?}|\/|[ |\-|<|>|\[|\]]/g, "").length);
