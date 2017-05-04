@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         github GMOD Piano Script
 // @namespace    https://github.com/rei2hu/MultiplayerPianoKeysScript
-// @version      4.04
+// @version      4.05
 // @description  MPP redefined xd
 // @author       You
 // @match        http://www.multiplayerpiano.com/*
@@ -383,7 +383,7 @@ z . x . c . v . b . n . m . ins .home.pgup.del.end.pgdn. up ".split(".");
                                 "https://raw.githubusercontent.com/rei2hu/piano-sounds/master/maestro/",
                                 "https://raw.githubusercontent.com/rei2hu/piano-sounds/master/steinway/",
                                 "/mp3/",
-                                "https://dl.dropboxusercontent.com/u/216104606/GreatAndSoftPiano/",
+                                "https://raw.githubusercontent.com/rei2hu/piano-sounds/master/acoustic_grand_piano/",
                                 "https://dl.dropboxusercontent.com/u/216104606/LoudAndProudPiano/",
                                 "https://dl.dropboxusercontent.com/u/258840068/CustomSounds/NewPiano/",
                                 "https://dl.dropboxusercontent.com/u/258840068/CustomSounds/HDPiano/",
